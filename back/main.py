@@ -1,2 +1,1 @@
-i = 200 
-t = i + 32
+print("Enloy")
