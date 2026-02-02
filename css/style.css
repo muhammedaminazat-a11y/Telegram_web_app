@@ -39,15 +39,21 @@ body{
   background: rgba(11,16,32,.70);
   border-bottom: 1px solid var(--stroke);
   padding: 14px 14px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
+}
+.logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  align-items: center;
+  color:ghostwhite;
+  font-size :30px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-.topbar__left{ display:flex; align-items:center; gap:12px; }
-.topbar__title{ font-weight: 700; letter-spacing:.2px; }
-.topbar__subtitle{ color: var(--muted); font-size: 12px; margin-top:2px; }
-.topbar__meta{ display:flex; flex-direction:column; }
+.topbar__left{ display:flex; align-items:center;  }
 
 .avatar{
   width: 38px; height:38px;
