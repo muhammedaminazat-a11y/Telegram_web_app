@@ -8,8 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-
-WEBAPP_URL = "https://твой-сайт.com"  # сюда URL твоего WebApp (обязательно https)
+URL = os.getenv("WEBAPP_URL")  # Сайт URL
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -19,7 +18,7 @@ def main_menu_kb() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="📌 Меню"), KeyboardButton(text="👤 Профиль")],
-            [KeyboardButton(text="🌐 Открыть WebApp", web_app=WebAppInfo(url=WEBAPP_URL))],
+            [KeyboardButton(text="🌐 Открыть WebApp", web_app=WebAppInfo(url=URL))],
             [KeyboardButton(text="О Приложений")],
         ],
         resize_keyboard=True
