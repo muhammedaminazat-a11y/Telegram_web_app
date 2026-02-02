@@ -2,65 +2,317 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ToDo</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ToDo WebApp</title>
+  <link rel="stylesheet" href="css/style.css?v=1" />
 </head>
 <body>
-  <div style="padding:10px;background:#fffae6">
-  BUILD: 2026-02-02 14:10
+  <div class="app">
+
+    <!-- Header -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <div class="avatar">M</div>
+        <div class="topbar__meta">
+          <div class="topbar__title">ToDo</div>
+          <div class="topbar__subtitle">Сегодня: <span id="todayText">—</span></div>
+        </div>
+      </div>
+
+      <button class="icon-btn" aria-label="Уведомления">
+        <span class="icon">🔔</span>
+      </button>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- HOME -->
+      <section class="screen is-active" data-screen="home">
+        <div class="card hero">
+          <div class="hero__text">
+            <div class="hero__label">Фокус на сегодня</div>
+            <div class="hero__value"><span id="doneCount">0</span>/<span id="planCount">5</span> задач</div>
+            <div class="hero__hint">Закрой задачи → получишь “награду”.</div>
+          </div>
+          <button class="btn btn-primary" id="addQuickTaskBtn">+ Быстрая задача</button>
+        </div>
+
+        <div class="grid-2">
+          <div class="card stat">
+            <div class="stat__label">Шаги</div>
+            <div class="stat__value">12 000</div>
+            <div class="stat__hint">цель 10–15k</div>
+          </div>
+          <div class="card stat">
+            <div class="stat__label">Фокус</div>
+            <div class="stat__value">25 мин</div>
+            <div class="stat__hint">помидор</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div class="section-title">Быстрые действия</div>
+            <button class="link-btn" id="openTasksFromHome">Все задачи</button>
+          </div>
+
+          <div class="quick-actions">
+            <button class="qa">
+              <span class="qa__icon">✅</span>
+              <span class="qa__text">Добавить задачу</span>
+            </button>
+            <button class="qa" id="goPomodoro">
+              <span class="qa__icon">🍅</span>
+              <span class="qa__text">Запустить помидор</span>
+            </button>
+            <button class="qa">
+              <span class="qa__icon">🎮</span>
+              <span class="qa__text">Награда</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">План на сегодня</div>
+          <ul class="task-list" id="homeTaskList">
+            <li class="task">
+              <label class="chk">
+                <input type="checkbox" class="task__check" />
+                <span class="chk__ui"></span>
+              </label>
+              <div class="task__body">
+                <div class="task__title">Учёба / пары</div>
+                <div class="task__meta">до 14:00</div>
+              </div>
+              <span class="pill">важно</span>
+            </li>
+
+            <li class="task">
+              <label class="chk">
+                <input type="checkbox" class="task__check" />
+                <span class="chk__ui"></span>
+              </label>
+              <div class="task__body">
+                <div class="task__title">Практика (Kotlin/бот)</div>
+                <div class="task__meta">40–60 мин</div>
+              </div>
+              <span class="pill pill-soft">код</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- POMODORO -->
+      <section class="screen" data-screen="pomodoro">
+        <div class="card">
+          <div class="section-title">Помидор 🍅</div>
+
+          <div class="timer">
+            <div class="timer__ring" aria-hidden="true"></div>
+            <div class="timer__time" id="timerText">25:00</div>
+            <div class="timer__hint">Фокус → перерыв → фокус</div>
+          </div>
+
+          <div class="row">
+            <button class="btn btn-primary" id="startTimerBtn">Старт</button>
+            <button class="btn btn-ghost" id="resetTimerBtn">Сброс</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Режим</div>
+          <div class="segmented" role="tablist" aria-label="Режим помидора">
+            <button class="seg is-active" data-min="25">25</button>
+            <button class="seg" data-min="45">45</button>
+            <button class="seg" data-min="50">50</button>
+          </div>
+          <div class="muted">Выбери длительность фокуса, потом жми “Старт”.</div>
+        </div>
+      </section>
+
+      <!-- CLICK -->
+      <section class="screen" data-screen="click">
+        <div class="card">
+          <div class="section-title">Click ⚡</div>
+          <div class="muted">Пока заглушка. Сюда можно добавить “быстрые отметки”: вода, зарядка, шаги.</div>
+          <div class="chips">
+            <button class="chip">💧 Вода</button>
+            <button class="chip">🏋️ Треня</button>
+            <button class="chip">🚶 Шаги</button>
+            <button class="chip">📚 Учёба</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TASKS -->
+      <section class="screen" data-screen="tasks">
+        <div class="card">
+          <div class="section-head">
+            <div class="section-title">Задачи</div>
+            <button class="btn btn-primary btn-sm" id="addTaskBtn">+ Добавить</button>
+          </div>
+
+          <div class="filters">
+            <button class="filter is-active" data-filter="all">Все</button>
+            <button class="filter" data-filter="today">Сегодня</button>
+            <button class="filter" data-filter="done">Готово</button>
+          </div>
+
+          <ul class="task-list" id="tasksList">
+            <li class="task">
+              <label class="chk">
+                <input type="checkbox" class="task__check" />
+                <span class="chk__ui"></span>
+              </label>
+              <div class="task__body">
+                <div class="task__title">Купить продукты</div>
+                <div class="task__meta">вечером</div>
+              </div>
+              <span class="pill pill-soft">дом</span>
+            </li>
+
+            <li class="task">
+              <label class="chk">
+                <input type="checkbox" class="task__check" />
+                <span class="chk__ui"></span>
+              </label>
+              <div class="task__body">
+                <div class="task__title">Помидор 25 мин</div>
+                <div class="task__meta">фокус</div>
+              </div>
+              <span class="pill">фокус</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="screen" data-screen="profile">
+        <div class="card profile-card">
+          <div class="profile-card__top">
+            <div class="avatar avatar-lg">M</div>
+            <div>
+              <div class="profile-name">Пользователь</div>
+              <div class="muted">Настройки и статистика</div>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button class="row-btn">
+              <span>⚙️ Настройки</span>
+              <span class="chev">›</span>
+            </button>
+            <button class="row-btn">
+              <span>📊 Статистика</span>
+              <span class="chev">›</span>
+            </button>
+            <button class="row-btn">
+              <span>🔒 Приватность</span>
+              <span class="chev">›</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav" aria-label="Навигация">
+      <button class="nav-btn is-active" data-target="home" aria-label="Главная">
+        <span class="nav-ico">🏠</span><span class="nav-txt">Главная</span>
+      </button>
+
+      <button class="nav-btn" data-target="pomodoro" aria-label="Помидор">
+        <span class="nav-ico">🍅</span><span class="nav-txt">Помидор</span>
+      </button>
+
+      <button class="nav-btn" data-target="click" aria-label="Click">
+        <span class="nav-ico">⚡</span><span class="nav-txt">Click</span>
+      </button>
+
+      <button class="nav-btn" data-target="tasks" aria-label="Задачи">
+        <span class="nav-ico">✅</span><span class="nav-txt">Задачи</span>
+      </button>
+
+      <button class="nav-btn" data-target="profile" aria-label="Профиль">
+        <span class="nav-ico">👤</span><span class="nav-txt">Профиль</span>
+      </button>
+    </nav>
+
   </div>
 
-  <main class="app">
-    <!-- Экраны -->
-    <section class="screen is-active" data-screen="home">
-      <h2>Главная</h2>
-      <p>Контент главной страницы</p>
-    </section>
-
-    <section class="screen" data-screen="pomodoro">
-      <h2>Помидор</h2>
-      <p>Таймер помодоро</p>
-    </section>
-
-    <section class="screen" data-screen="click">
-      <h2>Click</h2>
-      <p>Пока заглушка</p>
-    </section>
-
-    <section class="screen" data-screen="tasks">
-      <h2>Задачи</h2>
-      <p>Список задач</p>
-    </section>
-
-    <section class="screen" data-screen="profile">
-      <h2>Профиль</h2>
-      <p>Настройки, данные пользователя</p>
-    </section>
-  </main>
-
-  <!-- Футер-навбар -->
-  <nav class="bottom-nav">
-    <button class="nav-btn is-active" data-target="home">🏠<span>Главная</span></button>
-    <button class="nav-btn" data-target="pomodoro">🍅<span>Помидор</span></button>
-    <button class="nav-btn" data-target="click">⚡<span>Click</span></button>
-    <button class="nav-btn" data-target="tasks">✅<span>Задачи</span></button>
-    <button class="nav-btn" data-target="profile">👤<span>Профиль</span></button>
-  </nav>
-
   <script>
+    // --- Date label
+    const d = new Date();
+    const opts = { weekday: "short", day: "2-digit", month: "short" };
+    document.getElementById("todayText").textContent = d.toLocaleDateString("ru-RU", opts);
+
+    // --- Navigation
     const buttons = document.querySelectorAll(".nav-btn");
     const screens = document.querySelectorAll(".screen");
 
     function setActive(target) {
-      // screens
       screens.forEach(s => s.classList.toggle("is-active", s.dataset.screen === target));
-      // buttons
       buttons.forEach(b => b.classList.toggle("is-active", b.dataset.target === target));
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
 
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => setActive(btn.dataset.target));
+    buttons.forEach(btn => btn.addEventListener("click", () => setActive(btn.dataset.target)));
+
+    // quick links
+    document.getElementById("goPomodoro").addEventListener("click", () => setActive("pomodoro"));
+    document.getElementById("openTasksFromHome").addEventListener("click", () => setActive("tasks"));
+
+    // --- Minimal Pomodoro
+    let timer = null;
+    let totalSec = 25 * 60;
+    let remaining = totalSec;
+
+    const timerText = document.getElementById("timerText");
+
+    function renderTime(sec){
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      timerText.textContent = `${m}:${s}`;
+    }
+    renderTime(remaining);
+
+    function stopTimer(){
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    document.getElementById("startTimerBtn").addEventListener("click", () => {
+      if (timer) return;
+      timer = setInterval(() => {
+        remaining -= 1;
+        renderTime(remaining);
+        if (remaining <= 0){
+          stopTimer();
+          remaining = totalSec;
+          renderTime(remaining);
+          alert("Фокус завершён. Перерыв 5 минут 🙂");
+        }
+      }, 1000);
+    });
+
+    document.getElementById("resetTimerBtn").addEventListener("click", () => {
+      stopTimer();
+      remaining = totalSec;
+      renderTime(remaining);
+    });
+
+    document.querySelectorAll(".seg").forEach(seg => {
+      seg.addEventListener("click", () => {
+        document.querySelectorAll(".seg").forEach(s => s.classList.remove("is-active"));
+        seg.classList.add("is-active");
+        const min = Number(seg.dataset.min);
+        totalSec = min * 60;
+        remaining = totalSec;
+        renderTime(remaining);
+        stopTimer();
+      });
     });
   </script>
 </body>
