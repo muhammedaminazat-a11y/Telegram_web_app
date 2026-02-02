@@ -1,14 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ToDo</title>
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
-  
+
+  <main class="app">
+    <!-- Экраны -->
+    <section class="screen is-active" data-screen="home">
+      <h2>Главная</h2>
+      <p>Контент главной страницы</p>
+    </section>
+
+    <section class="screen" data-screen="pomodoro">
+      <h2>Помидор</h2>
+      <p>Таймер помодоро</p>
+    </section>
+
+    <section class="screen" data-screen="click">
+      <h2>Click</h2>
+      <p>Пока заглушка</p>
+    </section>
+
+    <section class="screen" data-screen="tasks">
+      <h2>Задачи</h2>
+      <p>Список задач</p>
+    </section>
+
+    <section class="screen" data-screen="profile">
+      <h2>Профиль</h2>
+      <p>Настройки, данные пользователя</p>
+    </section>
+  </main>
+
+  <!-- Футер-навбар -->
+  <nav class="bottom-nav">
+    <button class="nav-btn is-active" data-target="home">🏠<span>Главная</span></button>
+    <button class="nav-btn" data-target="pomodoro">🍅<span>Помидор</span></button>
+    <button class="nav-btn" data-target="click">⚡<span>Click</span></button>
+    <button class="nav-btn" data-target="tasks">✅<span>Задачи</span></button>
+    <button class="nav-btn" data-target="profile">👤<span>Профиль</span></button>
+  </nav>
+
+  <script>
+    const buttons = document.querySelectorAll(".nav-btn");
+    const screens = document.querySelectorAll(".screen");
+
+    function setActive(target) {
+      // screens
+      screens.forEach(s => s.classList.toggle("is-active", s.dataset.screen === target));
+      // buttons
+      buttons.forEach(b => b.classList.toggle("is-active", b.dataset.target === target));
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => setActive(btn.dataset.target));
+    });
+  </script>
+
 </body>
-<script>
-  
-</script>
 </html>
