@@ -1,0 +1,74 @@
+<section>
+  <div class="card hero">
+    <div class="hero__text">
+      <div class="hero__label">Фокус на сегодня</div>
+      <div class="hero__value"><span id="doneCount">0</span>/<span id="planCount">5</span> задач</div>
+      <div class="hero__hint">Закрой задачи → получишь “награду”.</div>
+    </div>
+    <button class="btn btn-primary" id="addQuickTaskBtn">+ Быстрая задача</button>
+  </div>
+
+  <div class="grid-2">
+    <div class="card stat">
+      <div class="stat__label">Шаги</div>
+      <div class="stat__value">12 000</div>
+      <div class="stat__hint">цель 10–15k</div>
+    </div>
+    <div class="card stat">
+      <div class="stat__label">Фокус</div>
+      <div class="stat__value">25 мин</div>
+      <div class="stat__hint">помидор</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <div class="section-title">Быстрые действия</div>
+      <button class="link-btn" id="openTasksFromHome">Все задачи</button>
+    </div>
+
+    <div class="quick-actions">
+      <button class="qa">
+        <span class="qa__icon">✅</span>
+        <span class="qa__text">Добавить задачу</span>
+      </button>
+      <button class="qa" id="goPomodoro">
+        <span class="qa__icon">🍅</span>
+        <span class="qa__text">Запустить помидор</span>
+      </button>
+      <button class="qa">
+        <span class="qa__icon">🎮</span>
+        <span class="qa__text">Награда</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">План на сегодня</div>
+    <ul class="task-list" id="homeTaskList">
+      <li class="task">
+        <label class="chk">
+          <input type="checkbox" class="task__check" />
+          <span class="chk__ui"></span>
+        </label>
+        <div class="task__body">
+          <div class="task__title">Учёба / пары</div>
+          <div class="task__meta">до 14:00</div>
+        </div>
+        <span class="pill">важно</span>
+      </li>
+
+      <li class="task">
+        <label class="chk">
+          <input type="checkbox" class="task__check" />
+          <span class="chk__ui"></span>
+        </label>
+        <div class="task__body">
+          <div class="task__title">Практика (Kotlin/бот)</div>
+          <div class="task__meta">40–60 мин</div>
+        </div>
+        <span class="pill pill-soft">код</span>
+      </li>
+    </ul>
+  </div>
+</section>

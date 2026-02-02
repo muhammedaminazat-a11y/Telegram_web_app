@@ -1,0 +1,26 @@
+<section>
+  <div class="card">
+    <div class="section-title">Помидор 🍅</div>
+
+    <div class="timer">
+      <div class="timer__ring" aria-hidden="true"></div>
+      <div class="timer__time" id="timerText">25:00</div>
+      <div class="timer__hint">Фокус → перерыв → фокус</div>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-primary" id="startTimerBtn">Старт</button>
+      <button class="btn btn-ghost" id="resetTimerBtn">Сброс</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Режим</div>
+    <div class="segmented" role="tablist" aria-label="Режим помидора">
+      <button class="seg is-active" data-min="25">25</button>
+      <button class="seg" data-min="45">45</button>
+      <button class="seg" data-min="50">50</button>
+    </div>
+    <div class="muted">Выбери длительность фокуса, потом жми “Старт”.</div>
+  </div>
+</section>
