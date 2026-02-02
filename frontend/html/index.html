@@ -1,20 +1,27 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>My Telegram App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hackathon WebApp</title>
+  <link rel="stylesheet" href="css/main.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h1>Привет из Telegram</h1>
-  <h2>egergsrgver</h2>
-  <p id="user"></p>
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    document.getElementById("user").innerText =
-      "Привет, " + tg.initDataUnsafe.user.first_name;
-  </script>
+  <div id="screenLoading" data-screen>Загрузка…</div>
+
+  <div id="screenHome" data-screen hidden>
+    <h1>Привет, <span id="userName"></span></h1>
+    <button id="btnProfile">Профиль</button>
+  </div>
+
+  <div id="screenError" data-screen hidden>
+    <h2>Ошибка</h2>
+    <pre id="errorText"></pre>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
+
      
