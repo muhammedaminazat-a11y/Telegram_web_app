@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import tasks # импорт роутов из папки routes
+from backend._source.routes import tasks # импорт роутов из папки routes
 
 # создания экземпляра приложения FastAPI
 app = FastAPI(title="Telegram Mini App To Do List API")
