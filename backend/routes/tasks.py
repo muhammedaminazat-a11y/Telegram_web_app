@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from schemas import TaskCreate, TaskUpdate, TaskOut
+from utils.schemas import TaskCreate, TaskUpdate, TaskOut
 
 router = APIRouter(
     prefix="/tasks",
