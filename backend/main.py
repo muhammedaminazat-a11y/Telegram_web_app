@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import tasks, users 
+from backend.routes import tasks, users, games, pomodoro, clicker
 
 # создания экземпляра приложения FastAPI
 app = FastAPI(title="Telegram Mini App To Do List API")
@@ -7,6 +7,9 @@ app = FastAPI(title="Telegram Mini App To Do List API")
 # подключение роутера для задач
 app.include_router(tasks.router)
 app.include_router(users.router)
+app.include_router(games.router) 
+app.include_router(pomodoro.router)
+app.include_router(clicker.router)
 
 # health-check эндпоинт
 @app.get("/health")
