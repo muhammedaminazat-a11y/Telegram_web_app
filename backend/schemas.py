@@ -1,23 +1,35 @@
 from pydantic import BaseModel, Field
 
 # --- Создание задачи ---
-class TaskCreate(BaseModel):
+class TaskBase(BaseModel):
     # -- Расширенная валидация данных -- 
-    title: str = Field(..., min_length=3, max_length=50, description="Название задачи") # ... обязательное поле 
+    title: str = Field(..., min_length=3, max_length=50, description="Название задачи") # ..., обязательное поле 
     description: str | None = Field(None, min_length=3, max_length=100, description="Описание задачи") 
     done: bool = Field(False, description="Статус задачи") # по умолчанию задача не выполнена
 
+# --- Создание задачи ---
+class TaskCreate(TaskBase):
+    class Config:
+        json_schema_extra = { 
+            "example": {
+                "title": "Учить FastAPI",
+                "description": "Разобраться с CRUD эндпоинтами",
+                "done": False 
+            }
+        }
 # --- Обновление задачи ---
 class TaskUpdate(BaseModel):
-    title: str | None = Field(None, min_length=3, max_length=50)
-    description: str | None = Field(None, max_length=100)
-    done: bool | None = None # булевое значение или отсутствует
+    # -- Расширенная валидация данных -- 
+   title: str | None = Field(None, min_length=3, max_length=50)
+   description: str | None = Field(None, max_length=100)
+   done: bool | None = None
+
 
 # --- Ответ сервера ---
-class TaskOut(BaseModel):
-    # -- Принимает в формате --
-    # целового числа, строки, строки с значением отсутствует и булевое значение 
-    id: int # целое число
-    title: str # строка
-    description: str | None # строка и значение отсутствует
-    done: bool # булевое значение true/false
+class TaskOut(TaskBase):
+    id: int = Field(..., gt=0, description="Уникальный идентификатор задачи") # ..., обязательное поле
+     
+# --- Ответ при удалении --- 
+class TaskDeleteResponse(BaseModel):
+     message: str
+     task: TaskOut

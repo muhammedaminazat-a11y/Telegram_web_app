@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from backend.schemas import TaskCreate, TaskUpdate, TaskOut
 
 router = APIRouter(
@@ -17,7 +17,10 @@ def get_tasks():
 # эндпоинт получения одной задачи
 @router.get("/{task_id}", response_model=TaskOut)
 def get_task(task_id: int):
-    return tasks.get(task_id, {"error": "Задача не найдена"})
+    if task_id in tasks:
+        raise HTTPException(status_code=404, detail="Задача не найдена")
+    return tasks[task_id]
+
 
 # эндпоинт создание задачи
 @router.post("/", response_model=TaskOut)
@@ -35,7 +38,7 @@ def create_task(task: TaskCreate):
 @router.put("/{task_id}", response_model=TaskOut)
 def update_task(task_id: int, task: TaskUpdate):
     if task_id not in tasks:
-        return {"error": "Задача не найдена"}
+        raise HTTPException(status_code=404, detail="Задача не найдена")
     
     # Обновляем задачу  
     tasks[task_id].update(task.dict(exclude_unset=True))
@@ -45,6 +48,6 @@ def update_task(task_id: int, task: TaskUpdate):
 @router.delete("/{task_id}")
 def delete_task(task_id: int):
     if task_id not in tasks:
-        return {"error": "Задача не найдена"}
+       raise HTTPException(status_code=404, detail="Задача не найдена")
     deleted = tasks.pop(task_id)
     return {"message": f"Задача {task_id} удалена", "task": deleted}
