@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 router = APIRouter(
-    prefix="/users",
-    tags=["users"]
+    prefix="/profile",
+    tags=["profile"]
     )
 
 # эндпоинт получения пользователей (заглушка)
