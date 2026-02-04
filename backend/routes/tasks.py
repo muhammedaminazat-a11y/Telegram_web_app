@@ -9,6 +9,16 @@ router = APIRouter(
 # временное хранилище словарь (замена на PostgreSQL)
 tasks = {}
 
+# эндпоинт получения списка задач
+@router.get("/", response_model=list[TaskOut])
+def get_tasks():
+    return list(tasks.values())
+
+# эндпоинт получения одной задачи
+@router.get("/{task_id}", response_model=TaskOut)
+def get_task(task_id: int):
+    return tasks.get(task_id, {"error": "Задача не найдена"})
+
 # эндпоинт создание задачи
 @router.post("/", response_model=TaskOut)
 def create_task(task: TaskCreate):
@@ -26,17 +36,15 @@ def create_task(task: TaskCreate):
 def update_task(task_id: int, task: TaskUpdate):
     if task_id not in tasks:
         return {"error": "Задача не найдена"}
-
-    update_data = task.dict(exclude_unset=True) # обновление данных
-
-    if not update_data:
-        return {"error": "Нет данных для обновления"}
-
+    
     # Обновляем задачу  
-    tasks[task_id].update(update_data)
+    tasks[task_id].update(task.dict(exclude_unset=True))
     return tasks[task_id]
 
-# эндпоинт получения всех задач
-@router.get("/", response_model=list[TaskOut])
-def get_tasks():
-    return list(tasks.values())
+# эндпоинт удаление задачи
+@router.delete("/{task_id}")
+def delete_task(task_id: int):
+    if task_id not in tasks:
+        return {"error": "Задача не найдена"}
+    deleted = tasks.pop(task_id)
+    return {"message": f"Задача {task_id} удалена", "task": deleted}
