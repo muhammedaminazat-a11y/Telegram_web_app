@@ -28,6 +28,7 @@ class TaskUpdate(BaseModel):
 # --- Ответ сервера ---
 class TaskOut(TaskBase):
     id: int = Field(..., gt=0, description="Уникальный идентификатор задачи") # ..., обязательное поле
+    # id: gt=0 задачи создаются от 1 и далее (id не может быть 0 и отрицательным числом) 
      
 # --- Ответ при удалении --- 
 class TaskDeleteResponse(BaseModel):
