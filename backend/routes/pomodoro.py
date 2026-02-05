@@ -24,3 +24,7 @@ def update_pomodoro(pomodoro_id: int):
 @router.delete("/{pomodoro_id}")
 def delete_pomodoro(pomodoro_id: int):
     return {"message": f"Таймер {pomodoro_id} удален"}
+
+def get_pomodoro_progress():
+    # Заглушка: пока возвращаем фиксированные данные
+    return {"elapsed": 0, "total": 25}

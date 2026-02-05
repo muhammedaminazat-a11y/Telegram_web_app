@@ -51,3 +51,7 @@ def delete_task(task_id: int):
        raise HTTPException(status_code=404, detail="Задача не найдена")
     deleted = tasks.pop(task_id)
     return {"message": f"Задача {task_id} удалена", "task": deleted}
+
+# функция для статистики 
+def get_tasks_count():
+    return len(tasks)

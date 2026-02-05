@@ -24,3 +24,7 @@ def update_click(click_id: int):
 @router.delete("/{click_id}")
 def delete_click(click_id: int):
     return {"message": f"Клик {click_id} удален"}
+
+def get_click_glasses(user_id: int):
+    # Заглушка: пока возвращаем 0
+    return 0

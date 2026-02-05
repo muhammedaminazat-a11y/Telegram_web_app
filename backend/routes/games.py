@@ -24,3 +24,7 @@ def update_game(game_id: int):
 @router.delete("/{game_id}")
 def delete_game(game_id: int):
     return {"message": f"Игра {game_id} удалена"}
+
+def get_games_glasses(user_id: int):
+    # Заглушка: пока возвращаем 0
+    return 0
