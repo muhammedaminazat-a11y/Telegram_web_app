@@ -10,7 +10,7 @@ class TaskBase(BaseModel):
 # --- Создание задачи ---
 class TaskCreate(TaskBase):
     class Config:
-        json_schema_extra = { 
+        json_schema_extra = {
             "example": {
                 "title": "Учить FastAPI",
                 "description": "Разобраться с CRUD эндпоинтами",
