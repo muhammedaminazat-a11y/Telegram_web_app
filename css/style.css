@@ -66,11 +66,8 @@ body{
 .avatar-lg{ width:56px; height:56px; font-size:18px; }
 
 .icon-btn{
-  border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
   color: var(--text);
-  width: 40px; height:40px;
-  border-radius: 14px;
+  width: 50px; height:50px;
   display:grid; place-items:center;
   cursor:pointer;
 }
@@ -262,7 +259,6 @@ body{
 }
 .timer__ring{
   width: 180px; height:180px;
-  border-radius: 50%;
   border: 1px solid rgba(255,255,255,.18);
   background:
     radial-gradient(circle at 30% 20%, rgba(124,92,255,.20), transparent 55%),
@@ -360,21 +356,19 @@ body{
 
 /* Bottom Nav */
 .bottom-nav{
-  position: fixed;
-  left: 12px; right: 12px; bottom: 12px;
-  height: 70px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid var(--stroke);
+  height: 50px;
   backdrop-filter: blur(14px);
   display:grid;
   grid-template-columns: repeat(5, 1fr);
   padding: 8px;
   gap: 8px;
-  box-shadow: var(--shadow);
 }
 
 .nav-btn{
+  display: flex;
+  align-items: center;
+  height: 70px;
+  background: #2b2f3a;
   border: 0;
   background: transparent;
   color: rgba(255,255,255,.70);
@@ -387,8 +381,26 @@ body{
   gap: 3px;
   padding: 6px 2px;
 }
-.nav-ico{ font-size: 18px; }
-.nav-txt{ font-size: 11px; font-weight: 800; }
+
+.nav-btn:hover{
+  background-color:rgba(124,92,255,.20);
+  transition:0.3s;
+}
+
+.icon-btn{
+  width: 30px;
+  height: 30px;
+}
+
+.nav-ico{ 
+  font-size: 10px; 
+  height: 30px;
+  width: 30px;
+  border: none;
+  background: none;
+  
+}
+.nav-txt{ font-size: 11px; font-weight: 800;font-family:  monospace; }
 
 .nav-btn.is-active{
   background: rgba(124,92,255,.20);
