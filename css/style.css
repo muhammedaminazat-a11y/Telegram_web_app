@@ -25,11 +25,7 @@ body{
     var(--bg);
 }
 
-.app{
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+
 
 /* Topbar */
 .topbar{
@@ -54,6 +50,7 @@ body{
 
 /* Content */
 .content{
+  flex: 1;
   padding: 14px 14px 96px; /* место под нижнюю навигацию */
 }
 
@@ -378,9 +375,16 @@ body{
   cursor: pointer;
 }
 
-/* Bottom nav (фикс без position — через layout + padding снизу в .content) */
 .footer{
-  /* если хочешь всегда снизу — app уже flex-column */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+  backdrop-filter: blur(14px);
+  background: rgba(11,16,32,.70);
+  border-top: 1px solid var(--stroke);
 }
 
 .bottom-nav{
