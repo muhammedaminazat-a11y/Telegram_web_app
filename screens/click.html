@@ -1,12 +1,46 @@
 <section>
-  <div class="card">
-    <div class="section-title">Click ⚡</div>
-    <div class="muted">Пока заглушка. Сюда можно добавить “быстрые отметки”: вода, зарядка, шаги.</div>
-    <div class="chips">
-      <button class="chip">💧 Вода</button>
-      <button class="chip">🏋️ Треня</button>
-      <button class="chip">🚶 Шаги</button>
-      <button class="chip">📚 Учёба</button>
+  <div class="card clicker">
+    <div class="section-head">
+      <div>
+        <div class="section-title">Click ⚡</div>
+        <div class="muted">Тапай — получай монеты. Энергия восстанавливается со временем.</div>
+      </div>
+
+      <div class="clicker__balance">
+        <div class="muted">Баланс</div>
+        <div class="clicker__coins" id="coinsText">0</div>
+      </div>
+    </div>
+
+    <div class="clicker__meta">
+      <div class="meta-pill">
+        <span class="muted">⚡ Энергия</span>
+        <b><span id="energyText">0</span>/<span id="energyMaxText">0</span></b>
+      </div>
+      <div class="meta-pill">
+        <span class="muted">👆/тап</span>
+        <b><span id="tapPowerText">1</span></b>
+      </div>
+      <div class="meta-pill">
+        <span class="muted">💸/час</span>
+        <b><span id="incomeText">0</span></b>
+      </div>
+    </div>
+
+    <button class="tap-btn" id="tapBtn" type="button" aria-label="Тап">
+      <img src="image/click.svg" alt="" class="tap-btn__icon">
+      <span class="tap-btn__text">TAP</span>
+    </button>
+
+    <div class="clicker__row">
+      <button class="btn btn-primary" id="buyTapBtn" type="button">Апгрейд клика</button>
+      <button class="btn btn-ghost" id="buyIncomeBtn" type="button">Пассив</button>
+    </div>
+
+    <div class="clicker__prices muted">
+      <div>Апгрейд клика: <b><span id="tapPriceText">0</span></b></div>
+      <div>Пассив: <b><span id="incomePriceText">0</span></b></div>
     </div>
   </div>
 </section>
+

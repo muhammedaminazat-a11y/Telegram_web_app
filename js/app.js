@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (name === "home") initHome();
       if (name === "pomodoro") initPomodoro();
       if (name === "tasks") initTasks();
-      // click/profile пока без JS
+      if (name === "click") initClick();
+      // profile пока без JS
     } catch (e) {
       console.error(e);
       content.innerHTML = `
@@ -154,6 +155,170 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- TASKS handlers (заглушка)
   function initTasks() {}
+
+  // --- CLICKER (Hamster-like) handlers
+  function initClick() {
+    const els = {
+      coinsText: document.getElementById("coinsText"),
+      energyText: document.getElementById("energyText"),
+      energyMaxText: document.getElementById("energyMaxText"),
+      tapPowerText: document.getElementById("tapPowerText"),
+      incomeText: document.getElementById("incomeText"),
+      tapPriceText: document.getElementById("tapPriceText"),
+      incomePriceText: document.getElementById("incomePriceText"),
+      tapBtn: document.getElementById("tapBtn"),
+      buyTapBtn: document.getElementById("buyTapBtn"),
+      buyIncomeBtn: document.getElementById("buyIncomeBtn"),
+    };
+
+    // если click.html ещё старый и элементов нет — выходим
+    if (!els.tapBtn) {
+      console.warn("Clicker: не найден #tapBtn (проверь click.html)");
+      return;
+    }
+
+    // чистим прошлый таймер, чтобы не копить интервалы при переключении вкладок
+    if (window.__clickerTimer) {
+      clearInterval(window.__clickerTimer);
+      window.__clickerTimer = null;
+    }
+
+    const KEY = "clicker_v1";
+
+    const defaults = {
+      coins: 0,
+      tapPower: 1,
+      incomePerHour: 0,
+
+      energy: 100,
+      energyMax: 100,
+
+      tapLevel: 0,
+      incomeLevel: 0,
+
+      lastTick: Date.now(),
+    };
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        return raw ? { ...defaults, ...JSON.parse(raw) } : { ...defaults };
+      } catch {
+        return { ...defaults };
+      }
+    }
+
+    function save(s) {
+      localStorage.setItem(KEY, JSON.stringify(s));
+    }
+
+    // Экономика
+    const priceTapBase = 20;
+    const priceIncomeBase = 50;
+
+    // энергия: +0.8 в секунду (≈48/мин)
+    const energyRegenPerSec = 0.8;
+
+    let state = load();
+
+    function calcTapPrice(s) {
+      return Math.floor(priceTapBase * Math.pow(1.15, s.tapLevel));
+    }
+
+    function calcIncomePrice(s) {
+      return Math.floor(priceIncomeBase * Math.pow(1.17, s.incomeLevel));
+    }
+
+    function applyTick(s) {
+      const now = Date.now();
+      const dtSec = Math.max(0, (now - s.lastTick) / 1000);
+
+      // пассив
+      if (s.incomePerHour > 0) {
+        s.coins += s.incomePerHour * (dtSec / 3600);
+      }
+
+      // реген энергии
+      s.energy = Math.min(s.energyMax, s.energy + energyRegenPerSec * dtSec);
+
+      s.lastTick = now;
+      return s;
+    }
+
+    function formatCoins(x) {
+      const v = Math.floor(x);
+      return v.toLocaleString("ru-RU");
+    }
+
+    function render(s) {
+      els.coinsText.textContent = formatCoins(s.coins);
+      els.energyText.textContent = Math.floor(s.energy);
+      els.energyMaxText.textContent = s.energyMax;
+      els.tapPowerText.textContent = s.tapPower;
+      els.incomeText.textContent = Math.floor(s.incomePerHour);
+
+      els.tapPriceText.textContent = calcTapPrice(s).toLocaleString("ru-RU");
+      els.incomePriceText.textContent = calcIncomePrice(s).toLocaleString("ru-RU");
+
+      const noEnergy = Math.floor(s.energy) <= 0;
+      els.tapBtn.disabled = noEnergy;
+      els.tapBtn.classList.toggle("is-disabled", noEnergy);
+    }
+
+    // применяем оффлайн-тик
+    state = applyTick(state);
+    save(state);
+    render(state);
+
+    // интервал тика
+    window.__clickerTimer = setInterval(() => {
+      state = applyTick(state);
+      save(state);
+      render(state);
+    }, 1000);
+
+    // TAP
+    els.tapBtn.addEventListener("click", () => {
+      if (Math.floor(state.energy) <= 0) return;
+
+      state.energy -= 1;
+      state.coins += state.tapPower;
+
+      save(state);
+      render(state);
+
+      // микро-анимация
+      els.tapBtn.classList.remove("tap-anim");
+      void els.tapBtn.offsetWidth;
+      els.tapBtn.classList.add("tap-anim");
+    });
+
+    // Upgrade tap
+    els.buyTapBtn.addEventListener("click", () => {
+      const price = calcTapPrice(state);
+      if (state.coins < price) return;
+
+      state.coins -= price;
+      state.tapLevel += 1;
+      state.tapPower += 1;
+
+      save(state);
+      render(state);
+    });
+
+    // Upgrade passive income
+    els.buyIncomeBtn.addEventListener("click", () => {
+      const price = calcIncomePrice(state);
+      if (state.coins < price) return;
+
+      state.coins -= price;
+      state.incomeLevel += 1;
+      state.incomePerHour += 30;
+
+      save(state);
+      render(state);
+    });
+  }
 
   // старт
   setActive("home");
