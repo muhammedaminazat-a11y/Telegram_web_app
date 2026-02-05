@@ -7,7 +7,8 @@ class ClickBase(BaseModel):
     count: int = Field(0, ge=0, description="Количество кликов")
 
 class ClickCreate(ClickBase):
-
+    name: str 
+    count: int = 0
     # Пример ввода клика
     class Config:
         json_schema_extra = {
