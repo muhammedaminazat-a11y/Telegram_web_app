@@ -5,11 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll(".nav-btn");
 
   if (!content) {
-    console.error('Не найден элемент #app-content');
+    console.error("Не найден #app-content");
     return;
   }
 
-  // ---- Дата в шапке (без падения, если элемента нет)
+  // ---- Дата в шапке (не упадёт, если элемента нет)
   const todayEl = document.getElementById("todayText");
   if (todayEl) {
     const d = new Date();
@@ -17,10 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     todayEl.textContent = d.toLocaleDateString("ru-RU", opts);
   }
 
-  // ---- Карта путей (папка -> index.html)
+  // ---- путь к экрану (файлы лежат в screens/*.html)
   function screenUrl(name) {
-    // ВАЖНО: без ведущего "/"
-    return `screens/${name}/index.html?v=2`;
+    return `screens/${name}.html?v=2`; // важно: без ведущего "/"
   }
 
   async function loadScreen(name) {
@@ -32,31 +31,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         content.innerHTML = `
-          <div style="padding:16px; font-family: sans-serif;">
+          <div style="padding:16px; font-family:sans-serif;">
             <h3>Экран не найден</h3>
-            <p><b>${name}</b></p>
-            <p>Путь: <code>${url}</code></p>
+            <p>name: <b>${name}</b></p>
+            <p>url: <code>${url}</code></p>
             <p>HTTP: ${res.status}</p>
           </div>
         `;
         return;
       }
 
-      const html = await res.text();
-      content.innerHTML = html;
+      content.innerHTML = await res.text();
 
-      // Инициализация логики конкретного экрана
+      // init после вставки HTML
       if (name === "home") initHome();
       if (name === "pomodoro") initPomodoro();
       if (name === "tasks") initTasks();
       // click/profile пока без JS
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
       content.innerHTML = `
-        <div style="padding:16px; font-family: sans-serif;">
-          <h3>Ошибка загрузки</h3>
-          <p>Экран: <b>${name}</b></p>
-          <p>Смотри Console (F12) для деталей.</p>
+        <div style="padding:16px; font-family:sans-serif;">
+          <h3>Ошибка загрузки экрана</h3>
+          <p>Открой Console (F12).</p>
         </div>
       `;
     }
@@ -68,8 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     loadScreen(target);
-
-    // прокрутка наверх
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
@@ -102,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = document.getElementById("resetTimerBtn");
 
     if (!timerText) {
-      console.warn("Не найден #timerText на экране pomodoro");
+      console.warn("На экране pomodoro нет #timerText");
       return;
     }
 
@@ -158,10 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- TASKS handlers (заглушка)
-  function initTasks() {
-    // позже добавишь логику задач
-  }
+  function initTasks() {}
 
-  // стартовый экран
+  // старт
   setActive("home");
 });
