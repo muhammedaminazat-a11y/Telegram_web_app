@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from routes.tasks import get_tasks_count
-from routes.pomodoro import get_pomodoro_progress
-from routes.click import get_click_glasses
-from routes.games import get_games_glasses
+from backend.routes.tasks import get_tasks_count
+from backend.routes.pomodoro import get_pomodoro_progress
+from backend.routes.click import get_click_glasses
+from backend.routes.games import get_games_glasses
 
 
 router = APIRouter(
