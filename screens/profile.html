@@ -1,40 +1,33 @@
-<section>
-  <div class="card">
-    <div class="section-head">
-      <div class="section-title">Задачи</div>
-      <button class="btn btn-primary btn-sm" id="addTaskBtn">+ Добавить</button>
+<section class="profile">
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img src="image/profile.svg" alt="Аватар">
     </div>
 
-    <div class="filters">
-      <button class="filter is-active" data-filter="all">Все</button>
-      <button class="filter" data-filter="today">Сегодня</button>
-      <button class="filter" data-filter="done">Готово</button>
+    <div class="profile-info">
+      <h2 class="profile-name">Пользователь</h2>
+      <p class="profile-subtitle">ToDo WebApp</p>
     </div>
+  </div>
 
-    <ul class="task-list" id="tasksList">
-      <li class="task">
-        <label class="chk">
-          <input type="checkbox" class="task__check" />
-          <span class="chk__ui"></span>
-        </label>
-        <div class="task__body">
-          <div class="task__title">Купить продукты</div>
-          <div class="task__meta">вечером</div>
-        </div>
-        <span class="pill pill-soft">дом</span>
-      </li>
+  <div class="profile-stats">
+    <div class="profile-stat">
+      <span class="profile-stat__value">12</span>
+      <span class="profile-stat__label">Задач</span>
+    </div>
+    <div class="profile-stat">
+      <span class="profile-stat__value">5</span>
+      <span class="profile-stat__label">Дней</span>
+    </div>
+    <div class="profile-stat">
+      <span class="profile-stat__value">3</span>
+      <span class="profile-stat__label">Фокуса</span>
+    </div>
+  </div>
 
-      <li class="task">
-        <label class="chk">
-          <input type="checkbox" class="task__check" />
-          <span class="chk__ui"></span>
-        </label>
-        <div class="task__body">
-          <div class="task__title">Помидор 25 мин</div>
-          <div class="task__meta">фокус</div>
-        </div>
-        <span class="pill">фокус</span>
-      </li>
-    </ul>
+  <div class="profile-menu">
+    <button class="profile-btn" type="button">⚙️ Настройки</button>
+    <button class="profile-btn" type="button">🌙 Тема</button>
+    <button class="profile-btn" type="button">📊 Статистика</button>
   </div>
 </section>

@@ -3,51 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ToDo WbApp</title>
+  <title>ToDo WebApp</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
   <div class="app">
-
-    <!-- Header -->
     <header class="topbar">
-      <div class="logo_bar">
-        <a href="index.html" class="logo">
-      <img src="image/logo.svg" alt="Логотип" width="100%" height="30px">
-    </a>
-      </div>
+      <a href="index.html" class="logo" aria-label="На главную">
+        <img src="image/logo.svg" alt="Логотип" height="30" />
+      </a>
     </header>
 
     <!-- сюда будут подгружаться экраны -->
     <main class="content" id="app-content"></main>
 
-    
+    <footer class="footer">
+      <nav class="bottom-nav" aria-label="Навигация">
+        <button class="nav-btn is-active" data-target="home" type="button" aria-label="Главная">
+          <span class="nav-ico">
+            <img class="nav-icon" src="image/home.svg" alt="" />
+          </span>
+          <span class="nav-txt">Главная</span>
+        </button>
 
+        <button class="nav-btn" data-target="pomodoro" type="button" aria-label="Метод">
+          <span class="nav-ico">
+            <img class="nav-icon" src="image/pomidor.svg" alt="" />
+          </span>
+          <span class="nav-txt">Метод</span>
+        </button>
+
+        <button class="nav-btn nav-btn--fab" data-target="click" type="button" aria-label="Click">
+          <span class="nav-ico nav-ico--fab">
+            <img class="nav-icon" src="image/click.svg" alt="" />
+          </span>
+          <span class="nav-txt">Click</span>
+        </button>
+
+        <button class="nav-btn" data-target="tasks" type="button" aria-label="Задачи">
+          <span class="nav-ico">
+            <img class="nav-icon" src="image/tasks.svg" alt="" />
+          </span>
+          <span class="nav-txt">Задачи</span>
+        </button>
+
+        <button class="nav-btn" data-target="profile" type="button" aria-label="Профиль">
+          <span class="nav-ico">
+            <img class="nav-icon" src="image/profile.svg" alt="" />
+          </span>
+          <span class="nav-txt">Профиль</span>
+        </button>
+      </nav>
+    </footer>
   </div>
-  <footer>
-    <!-- Button nav -->
-    <nav class="bottom-nav" aria-label="Навигация">
-      <button class="nav-btn is-active" data-target="home" aria-label="Главная">
-        <span class="nav-ico"><img class="icon-btn" src="image/home.svg" alt="Главная иконка"></span><span class="nav-txt">Главная</span>
-      </button>
 
-      <button class="nav-btn" data-target="pomodoro" aria-label="Помидор">
-        <span class="nav-ico"><img class="icon-btn" src="image/pomidor.svg" alt="Иконка помидора"></span><span class="nav-txt">Метод</span>
-      </button>
-      
-      <button class="nav-btn" data-target="click" aria-label="Click">
-        <span class="nav-ico"><img class="icon-btn" src="image/click.svg" alt="Кнопка кликер"></span><span class="nav-txt">Click</span>
-      </button>
-
-      <button class="nav-btn" data-target="tasks" aria-label="Задачи">
-        <span class="nav-ico"><img class="icon-btn" src="image/tasks.svg" alt="Задачи"></span><span class="nav-txt">Задачи</span>
-      </button>
-
-      <button class="nav-btn" data-target="profile" aria-label="Профиль">
-        <span class="nav-ico"><img class="icon-btn" src="image/profile.svg" alt="Профиль"></span><span class="nav-txt">Профиль</span>
-      </button>
-    </nav>
-  </footer>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,40 @@
+<section>
+  <div class="card">
+    <div class="section-head">
+      <div class="section-title">Задачи</div>
+      <button class="btn btn-primary btn-sm" id="addTaskBtn">+ Добавить</button>
+    </div>
+
+    <div class="filters">
+      <button class="filter is-active" data-filter="all">Все</button>
+      <button class="filter" data-filter="today">Сегодня</button>
+      <button class="filter" data-filter="done">Готово</button>
+    </div>
+
+    <ul class="task-list" id="tasksList">
+      <li class="task">
+        <label class="chk">
+          <input type="checkbox" class="task__check" />
+          <span class="chk__ui"></span>
+        </label>
+        <div class="task__body">
+          <div class="task__title">Купить продукты</div>
+          <div class="task__meta">вечером</div>
+        </div>
+        <span class="pill pill-soft">дом</span>
+      </li>
+
+      <li class="task">
+        <label class="chk">
+          <input type="checkbox" class="task__check" />
+          <span class="chk__ui"></span>
+        </label>
+        <div class="task__body">
+          <div class="task__title">Помидор 25 мин</div>
+          <div class="task__meta">фокус</div>
+        </div>
+        <span class="pill">фокус</span>
+      </li>
+    </ul>
+  </div>
+</section>
