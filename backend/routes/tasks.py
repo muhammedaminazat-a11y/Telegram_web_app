@@ -1,5 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from backend.schemas import TaskCreate, TaskUpdate, TaskOut
+from backend.schemas import (
+    TaskCreate, 
+    TaskUpdate,
+    TaskOut,
+)
 
 router = APIRouter(
     prefix="/tasks",
@@ -18,8 +22,8 @@ def get_tasks():
 @router.get("/{task_id}", response_model=TaskOut)
 def get_task(task_id: int):
     if task_id in tasks:
-        raise HTTPException(status_code=404, detail="Задача не найдена")
-    return tasks[task_id]
+        return tasks[task_id]
+    raise HTTPException(status_code=404, detail="Задача не найдена")
 
 
 # эндпоинт создание задачи
