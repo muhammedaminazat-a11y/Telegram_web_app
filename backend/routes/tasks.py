@@ -43,8 +43,6 @@ def create_task(task: TaskCreate):
 def update_task(task_id: int, task: TaskUpdate):
     if task_id not in tasks:
         raise HTTPException(status_code=404, detail="Задача не найдена")
-    
-    # Обновляем задачу  
     tasks[task_id].update(task.dict(exclude_unset=True))
     return tasks[task_id]
 
