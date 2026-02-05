@@ -34,3 +34,4 @@ class TaskOut(TaskBase):
 class TaskDeleteResponse(BaseModel):
      message: str
      task: TaskOut
+
