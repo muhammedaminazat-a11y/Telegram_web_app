@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.schemas import (
+from backend.schemas.click import (
     ClickCreate, 
     ClickUpdate,
     ClickOut,
@@ -22,8 +22,8 @@ def get_clicks():
 @router.get("/{click_id}", response_model=ClickOut)
 def get_click(click_id: int):
     if click_id not in clicks:
-        return clicks[click_id]
-    raise HTTPException(status_code=404, detail="Click не найден")
+         raise HTTPException(status_code=404, detail="Click не найден")
+    return clicks[click_id]
 
 # эндпоинт создание кликера
 @router.post("/", response_model=ClickOut)
