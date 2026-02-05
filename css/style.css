@@ -360,21 +360,20 @@ body{
 
 /* Bottom Nav */
 .bottom-nav{
-  position: fixed;
-  left: 12px; right: 12px; bottom: 12px;
-  height: 70px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.10);
+  height: 50px;
   border: 1px solid var(--stroke);
   backdrop-filter: blur(14px);
   display:grid;
   grid-template-columns: repeat(5, 1fr);
   padding: 8px;
   gap: 8px;
-  box-shadow: var(--shadow);
 }
 
 .nav-btn{
+  display: flex;
+  align-items: center;
+  height: 70px;
+  background: #2b2f3a;
   border: 0;
   background: transparent;
   color: rgba(255,255,255,.70);
@@ -387,7 +386,22 @@ body{
   gap: 3px;
   padding: 6px 2px;
 }
-.nav-ico{ font-size: 18px; }
+
+.nav-btn:hover{
+  background-color:rgba(124,92,255,.20);
+  transition:0.3s;
+}
+
+.icon-btn{
+  width: 30px;
+  height: 30px;
+}
+
+.nav-ico{ 
+  font-size: 10px; 
+  height: 30px;
+  width: 30px;
+}
 .nav-txt{ font-size: 11px; font-weight: 800; }
 
 .nav-btn.is-active{
