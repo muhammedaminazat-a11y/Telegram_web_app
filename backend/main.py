@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.routes import click, ai, home, pomodoro, profile, task
+from backend.routes import ai, click, home, pomodoro, profile, task
 
 # создания экземпляра приложения FastAPI
 app = FastAPI(title="Telegram Mini App To Do List API")
