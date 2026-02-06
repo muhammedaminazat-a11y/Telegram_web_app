@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from pydantic import BaseModel, Field
 
 # Схема для click_glasses
 class ClickGlasses(BaseModel):
