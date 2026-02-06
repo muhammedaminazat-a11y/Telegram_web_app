@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from backend.routes.tasks import get_tasks_count
+from backend.schemas.home import HomeRootResponse, HomeAboutResponse
+from backend.routes.task import get_tasks_count
 from backend.routes.pomodoro import get_pomodoro_progress
 from backend.routes.click import get_click_glasses
 from backend.routes.games import get_games_glasses

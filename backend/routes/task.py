@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.schemas import (
+from backend.schemas.tasks import (
     TaskCreate, 
     TaskUpdate,
     TaskOut,

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.schemas import (
+from backend.schemas.profile import (
     ProfileCreate, 
     ProfileUpdate,
     ProfileOut,
