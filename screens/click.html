@@ -1,25 +1,33 @@
 <section class="chat">
   <div class="card chat-card">
-    <div class="section-head">
-      <div class="section-title">AI Chat 🤖</div>
-      <button class="btn btn-ghost btn-sm" id="chatClearBtn" type="button">Очистить</button>
+    <div class="chat-top">
+      <div>
+        <div class="section-title" style="margin:0">Chat</div>
+        <div class="muted">Заглушка “как ChatGPT” (потом подключим ИИ)</div>
+      </div>
+
+      <div class="chat-top__actions">
+        <button class="btn btn-ghost btn-sm" id="chatClearBtn" type="button">Очистить</button>
+      </div>
     </div>
 
     <div class="chat-box" id="chatBox" aria-label="Сообщения"></div>
 
     <form class="chat-form" id="chatForm">
-      <input
+      <textarea
         class="chat-input"
         id="chatInput"
-        type="text"
+        rows="1"
         placeholder="Напиши сообщение…"
-        autocomplete="off"
-      />
-      <button class="btn btn-primary chat-send" id="chatSendBtn" type="submit">Отправить</button>
+      ></textarea>
+
+      <button class="btn btn-primary chat-send" id="chatSendBtn" type="submit" aria-label="Отправить">
+        ➤
+      </button>
     </form>
 
-    <div class="muted chat-hint">
-      Подсказка: на сервере нужен эндпоинт <code>/api/chat</code>.
+    <div class="chat-footer muted">
+      Enter — отправить • Shift+Enter — новая строка
     </div>
   </div>
 </section>
