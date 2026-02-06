@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.routes import click, ai, home, pomodoro, profile, task
+from backend.routes import click, ai, home, pomodoro, profile, tasks
 
 # создания экземпляра приложения FastAPI
 app = FastAPI(title="Telegram Mini App To Do List API")
@@ -10,7 +10,7 @@ app.include_router(ai.router)
 app.include_router(home.router)
 app.include_router(pomodoro.router)
 app.include_router(profile.router)
-app.include_router(task.router)
+app.include_router(tasks.router)
 
 
 # health-check эндпоинт
