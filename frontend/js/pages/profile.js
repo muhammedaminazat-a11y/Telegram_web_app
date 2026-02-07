@@ -1,4 +1,3 @@
-
 export function initProfile() {
   const nameEl = document.getElementById("tgName");
   const userEl = document.getElementById("tgUsername");
@@ -21,13 +20,14 @@ export function initProfile() {
       "Подсказка: профиль заполняется только внутри Telegram (WebApp SDK недоступен в обычном браузере)."
     );
     if (copyBtn) copyBtn.disabled = true;
+
+    // всё равно включаем dropdown (работает и в браузере)
+    setupSettingsDropdown();
     return;
   }
 
   // 2) Сообщаем Telegram что всё готово
   tg.ready();
-
-  // Можно развернуть WebApp на всю высоту
   tg.expand?.();
 
   // 3) Берём пользователя из initDataUnsafe
@@ -42,6 +42,8 @@ export function initProfile() {
       "Если это в Telegram — возможно Mini App запущено без user (редко) или данные не передались."
     );
     if (copyBtn) copyBtn.disabled = true;
+
+    setupSettingsDropdown();
     return;
   }
 
@@ -65,7 +67,6 @@ export function initProfile() {
       copyBtn.textContent = "✅ ID скопирован";
       setTimeout(() => (copyBtn.textContent = "📋 Скопировать ID"), 1200);
     } catch {
-      // fallback
       const ta = document.createElement("textarea");
       ta.value = id;
       document.body.appendChild(ta);
@@ -77,4 +78,22 @@ export function initProfile() {
       setTimeout(() => (copyBtn.textContent = "📋 Скопировать ID"), 1200);
     }
   });
+
+  // ✅ dropdown “Настройки” (после того как HTML профиля уже вставлен)
+  setupSettingsDropdown();
+
+  // -----------------------------
+  // helpers
+  function setupSettingsDropdown() {
+    const toggle = document.getElementById("settingsToggle");
+    const dropdown = document.getElementById("settingsDropdown");
+    const arrow = document.getElementById("settingsArrow");
+
+    if (!toggle || !dropdown) return;
+
+    toggle.addEventListener("click", () => {
+      const opened = dropdown.classList.toggle("is-open");
+      if (arrow) arrow.textContent = opened ? "⌃" : "⌄";
+    });
+  }
 }

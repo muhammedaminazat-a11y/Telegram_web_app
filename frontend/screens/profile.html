@@ -1,24 +1,117 @@
-<section class="profile">
-  <div class="card">
-    <div class="profile-header">
-      <div class="profile-avatar">
-        <img id="tgAvatar" src="image/profile.svg" alt="Аватар">
-      </div>
+<section class="profile-page">
+  <!-- Top bar -->
+  <div class="profile-topbar">
+    <button class="p-icon-btn" type="button" aria-label="Закрыть" id="profileCloseBtn">✕</button>
 
-      <div class="profile-info">
-        <h2 class="profile-name" id="tgName">Пользователь</h2>
-        <p class="profile-subtitle" id="tgUsername">@username</p>
-        <p class="muted" style="margin:6px 0 0">
-          ID: <b id="tgId">—</b>
-        </p>
-      </div>
-      <div class="profile-menu">
-      <button class="profile-btn" id="copyTgIdBtn" type="button">📋 Скопировать ID</button>
-      <button class="profile-btn" type="button">⚙️ Настройки</button>
-      <button class="profile-btn" type="button">📊 Статистика</button>
+    <div class="profile-title">
+      <div class="profile-title__main">Профиль</div>
+      <div class="profile-title__sub muted" id="tgEnvHint">Telegram WebApp</div>
     </div>
 
-    <p class="muted" id="tgEnvHint" style="margin:12px 0 0"></p>
+    <button class="p-icon-btn" type="button" aria-label="Меню" id="profileMenuBtn">⋮</button>
+  </div>
+
+  <!-- User card -->
+  <div class="card profile-card">
+    <div class="profile-head">
+      <div class="profile-avatar">
+        <img id="tgAvatar" src="frontend/image/profile.svg" alt="Аватар" />
+      </div>
+
+      <div class="profile-meta">
+        <div class="profile-name" id="tgName">Пользователь</div>
+        <div class="profile-username muted" id="tgUsername">@username</div>
+        <div class="profile-id muted">ID: <b id="tgId">—</b></div>
+      </div>
+    </div>
+
+    <!-- quick stats -->
+    <div class="profile-quick">
+      <div class="quick-pill">
+        <div class="quick-pill__label muted">Coins</div>
+        <div class="quick-pill__value" id="pCoins">0</div>
+      </div>
+
+      <div class="quick-pill">
+        <div class="quick-pill__label muted">Streak</div>
+        <div class="quick-pill__value" id="pStreak">0</div>
+      </div>
+
+      <div class="quick-pill">
+        <div class="quick-pill__label muted">Tasks</div>
+        <div class="quick-pill__value" id="pTasks">0</div>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn btn-primary btn-sm" id="copyTgIdBtn" type="button">📋 Скопировать ID</button>
+      <button class="btn btn-ghost btn-sm" id="shareBtn" type="button">↗ Поделиться</button>
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <div class="card profile-section">
+    <div class="section-title" style="margin:0 0 10px">Аккаунт</div>
+
+    <button class="p-row" type="button" id="openStatsBtn">
+      <span class="p-row__left">📊</span>
+      <span class="p-row__mid">
+        <span class="p-row__title">Статистика</span>
+        <span class="p-row__hint muted">прогресс и достижения</span>
+      </span>
+      <span class="p-row__right">›</span>
+    </button>
+
+<!-- SETTINGS ROW -->
+<button class="p-row" type="button" id="settingsToggle">
+  <span class="p-row__left">⚙️</span>
+  <span class="p-row__mid">
+    <span class="p-row__title">Настройки</span>
+    <span class="p-row__hint muted">уведомления, язык</span>
+  </span>
+  <span class="p-row__right" id="settingsArrow">⌄</span>
+</button>
+
+<!-- DROPDOWN -->
+<div class="settings-dropdown" id="settingsDropdown">
+  <button class="settings-item">🔔 Уведомления</button>
+  <button class="settings-item">🌍 Язык</button>
+  <button class="settings-item">🌙 Тема</button>
+</div>
+
+    <button class="p-row" type="button" id="themeBtn">
+      <span class="p-row__left">🌙</span>
+      <span class="p-row__mid">
+        <span class="p-row__title">Тема</span>
+        <span class="p-row__hint muted">тёмная / светлая</span>
+      </span>
+      <span class="p-row__right">›</span>
+    </button>
+  </div>
+
+  <div class="card profile-section">
+    <div class="section-title" style="margin:0 0 10px">Проект</div>
+
+    <button class="p-row" type="button" id="aboutBtn">
+      <span class="p-row__left">ℹ️</span>
+      <span class="p-row__mid">
+        <span class="p-row__title">О приложении</span>
+        <span class="p-row__hint muted">версия, авторы</span>
+      </span>
+      <span class="p-row__right">›</span>
+    </button>
+
+    <button class="p-row p-row--danger" type="button" id="logoutBtn">
+      <span class="p-row__left">🚪</span>
+      <span class="p-row__mid">
+        <span class="p-row__title">Выйти</span>
+        <span class="p-row__hint muted">очистить локальные данные</span>
+      </span>
+      <span class="p-row__right">›</span>
+    </button>
+  </div>
+
+  <div class="muted profile-bottom-note">
+    Потом сюда можно добавить “рефералку”, магазин, скины — как у Hamster.
   </div>
 </section>
- 

@@ -1,69 +1,214 @@
-.profile{ padding: 16px; }
+/* pages/profile.css */
 
-.profile-header{
-  display:flex;
-  align-items:center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.profile-avatar{
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display:grid;
-  place-items:center;
-  background: rgba(255,255,255,.08);
-  border: 1px solid var(--stroke);
-}
-.profile-avatar img{ width: 34px; height: 34px; }
-
-.profile-name{
-  margin: 0;
-  font-size: 18px;
-  font-weight: 900;
-}
-.profile-subtitle{
-  margin: 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.profile-stats{
-  display:flex;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-.profile-stat{
-  flex:1;
-  text-align:center;
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--stroke);
-  padding: 12px;
-  border-radius: 12px;
-}
-.profile-stat__value{
-  display:block;
-  font-size: 18px;
-  font-weight: 900;
-}
-.profile-stat__label{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.profile-menu{
+.profile-page{
   display:flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
-.profile-btn{
-  padding: 14px;
-  border-radius: 12px;
+
+/* topbar */
+.profile-topbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 2px;
+}
+
+.p-icon-btn{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
   border: 1px solid var(--stroke);
   background: rgba(255,255,255,.06);
   color: var(--text);
-  font-size: 15px;
-  text-align: left;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-weight: 900;
+}
+
+.profile-title{
+  text-align:center;
+  flex: 1;
+  min-width: 0;
+}
+.profile-title__main{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+.profile-title__sub{
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* profile main card */
+.profile-card{
+  padding: 14px;
+}
+
+.profile-head{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+
+.profile-avatar{
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+.profile-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-meta{
+  min-width: 0;
+}
+.profile-name{
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1.1;
+}
+.profile-username{
+  margin-top: 4px;
+}
+.profile-id{
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* quick pills */
+.profile-quick{
+  margin-top: 12px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quick-pill{
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  padding: 10px 10px;
+  text-align:left;
+}
+.quick-pill__label{
+  font-size: 11px;
+}
+.quick-pill__value{
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+/* action buttons */
+.profile-actions{
+  margin-top: 12px;
+  display:flex;
+  gap: 10px;
+}
+.profile-actions .btn{
+  flex: 1;
+}
+
+/* sections */
+.profile-section{
+  padding: 14px;
+}
+/*  */
+.p-row{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  text-align:left;
+}
+.p-row + .p-row{ margin-top: 10px; }
+
+.p-row__left{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display:grid;
+  place-items:center;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.p-row__mid{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.p-row__title{
+  font-weight: 900;
+}
+.p-row__hint{
+  font-size: 12px;
+}
+
+.p-row__right{
+  font-size: 18px;
+  opacity: .8;
+}
+
+.p-row--danger{
+  border-color: rgba(239,68,68,.35);
+  background: rgba(239,68,68,.08);
+}
+
+.profile-bottom-note{
+  font-size: 12px;
+  text-align:center;
+  padding: 6px 10px 2px;
+}
+
+
+/* settings dropdown */
+.settings-dropdown{
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease, opacity .2s ease;
+  opacity: 0;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-dropdown.is-open{
+  max-height: 300px; /* с запасом */
+  opacity: 1;
+}
+
+.settings-item{
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
   cursor: pointer;
+  text-align: left;
+  font-weight: 700;
+}
+
+.settings-item:hover{
+  background: rgba(124,92,255,.15);
 }
