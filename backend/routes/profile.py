@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from backend.services import profile_service
 from backend.schemas.profile import (
     ProfileCreate, 
     ProfileUpdate,
@@ -21,36 +22,19 @@ def get_profiles():
 # эндпоинт получения одного пользователя
 @router.get("/{profile_id}", response_model=ProfileOut)
 def get_profile(profile_id: int):
-    if profile_id in profiles:
-        return profiles[profile_id]
-    raise HTTPException(status_code=404, detail="Профиль не найден")
+    return profile_service.get_profile(profile_id)
 
 # эндпоинт создание профиля
 @router.post("/", response_model=ProfileOut)
 def create_profile(profile: ProfileCreate):
-   profiles_id = len(profiles) + 1 # при создании id увеличивается на 1
-   profiles[profiles_id] = {
-        "id": profiles_id, 
-        "telegram_id": profile.telegram_id,
-        "name": profile.name,
-        "avatar_url": profile.avatar_url,
-        "settings": profile.settings
-        }   
-   return profiles[profiles_id]
-
+  return profile_service.create_profile(profile)
 
 # эндпоинт обновление пользователей 
 @router.put("/{profile_id}", response_model = ProfileOut)
 def update_profile(profile_id: int, profile: ProfileUpdate):
-    if profile_id not in profiles:
-        raise HTTPException(status_code=404, detail="Профиль не найден")
-    profiles[profile_id].update(profile.dict(exclude_unset=True))
-    return profiles[profile_id]
+    return profile_service.update_profile(profile_id, profile)
 
 # эндпоинт удаление пользователей 
 @router.delete("/{profile_id}")
 def delete_profile(profile_id: int):
-    if profile_id not in profiles:
-        raise HTTPException(status_code=404, detail="Профиль не найден")
-    deleted = profiles.pop(profile_id)
-    return {"message": f"Профиль {profile_id} удален", "profile": deleted}
+    return profile_service.delete_profile(profile_id)

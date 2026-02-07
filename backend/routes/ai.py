@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from backend.services import ai_service
 from backend.schemas.ai import (
     AIRequest, 
@@ -10,10 +10,10 @@ router = APIRouter(
     tags=["ai"]
 )
 
-@router.post("/chat", response_model=AIResponse)
+@router.post("ai_/chat", response_model=AIResponse)
 def ai_chat(request: AIRequest):
-    try:
-        answer = ai_service.ask_ai(request.prompt)
-        return AIResponse(answer=answer)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return ai_service.ask_ai(request)
+
+@router.get("/history", response_model=list[dict])
+def get_history():
+    return ai_service.get_history()
