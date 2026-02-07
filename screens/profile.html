@@ -1,33 +1,25 @@
 <section class="profile">
-  <div class="profile-header">
-    <div class="profile-avatar">
-      <img src="image/profile.svg" alt="Аватар">
+  <div class="card">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img id="tgAvatar" src="image/profile.svg" alt="Аватар">
+      </div>
+
+      <div class="profile-info">
+        <h2 class="profile-name" id="tgName">Пользователь</h2>
+        <p class="profile-subtitle" id="tgUsername">@username</p>
+        <p class="muted" style="margin:6px 0 0">
+          ID: <b id="tgId">—</b>
+        </p>
+      </div>
     </div>
 
-    <div class="profile-info">
-      <h2 class="profile-name">Пользователь</h2>
-      <p class="profile-subtitle">ToDo WebApp</p>
+    <div class="profile-menu">
+      <button class="profile-btn" id="copyTgIdBtn" type="button">📋 Скопировать ID</button>
+      <button class="profile-btn" type="button">⚙️ Настройки</button>
+      <button class="profile-btn" type="button">📊 Статистика</button>
     </div>
-  </div>
 
-  <div class="profile-stats">
-    <div class="profile-stat">
-      <span class="profile-stat__value">12</span>
-      <span class="profile-stat__label">Задач</span>
-    </div>
-    <div class="profile-stat">
-      <span class="profile-stat__value">5</span>
-      <span class="profile-stat__label">Дней</span>
-    </div>
-    <div class="profile-stat">
-      <span class="profile-stat__value">3</span>
-      <span class="profile-stat__label">Фокуса</span>
-    </div>
-  </div>
-
-  <div class="profile-menu">
-    <button class="profile-btn" type="button">⚙️ Настройки</button>
-    <button class="profile-btn" type="button">🌙 Тема</button>
-    <button class="profile-btn" type="button">📊 Статистика</button>
+    <p class="muted" id="tgEnvHint" style="margin:12px 0 0"></p>
   </div>
 </section>
