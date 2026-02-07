@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException
-from backend.schemas.tasks import (
+from backend.schemas.task import (
     TaskCreate, 
     TaskUpdate,
     TaskOut,
 )
 
 router = APIRouter(
-    prefix="/tasks",
-    tags=["tasks"]
+    prefix="/task",
+    tags=["task"]
     )
 
 # временное хранилище словарь (замена на PostgreSQL)
