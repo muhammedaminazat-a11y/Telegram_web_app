@@ -1,7 +1,7 @@
 @import url("./base.css");
 @import url("./components.css");
 
-/* Pages */
+/* Страницы */
 @import url("./pages/home.css");
 @import url("./pages/pomodoro.css");
 @import url("./pages/profile.css");
