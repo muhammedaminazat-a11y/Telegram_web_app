@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function screenUrl(name) {
-    return `screens/${name}.html?v=2`;
+    return `frontend/screens/${name}.html?v=2`;
   }
 
   async function loadScreen(name) {
