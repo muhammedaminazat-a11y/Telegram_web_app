@@ -1,33 +1,51 @@
-<section class="chat">
-  <div class="card chat-card">
-    <div class="chat-top">
+<section class="clicker">
+  <div class="card clicker-card">
+    <div class="clicker-top">
       <div>
-        <div class="section-title" style="margin:0">Chat</div>
-        <div class="muted">Заглушка “как ChatGPT” (потом подключим ИИ)</div>
+        <div class="section-title" style="margin:0">Clicker</div>
+        <div class="muted">Тапай по кнопке — потом подключим начисление монет</div>
       </div>
 
-      <div class="chat-top__actions">
-        <button class="btn btn-ghost btn-sm" id="chatClearBtn" type="button">Очистить</button>
+      <div class="clicker-top__actions">
+        <button class="btn btn-ghost btn-sm" id="clickResetBtn" type="button">Сброс</button>
       </div>
     </div>
 
-    <div class="chat-box" id="chatBox" aria-label="Сообщения"></div>
+    <div class="clicker-stats">
+      <div class="stat">
+        <div class="stat__label muted">Coins</div>
+        <div class="stat__value" id="coinsUi">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label muted">/Click</div>
+        <div class="stat__value" id="cpcUi">+1</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label muted">/Hour</div>
+        <div class="stat__value" id="cphUi">+0</div>
+      </div>
+    </div>
 
-    <form class="chat-form" id="chatForm">
-      <textarea
-        class="chat-input"
-        id="chatInput"
-        rows="1"
-        placeholder="Напиши сообщение…"
-      ></textarea>
-
-      <button class="btn btn-primary chat-send" id="chatSendBtn" type="submit" aria-label="Отправить">
-        ➤
+    <div class="clicker-body">
+      <button class="tap-btn" id="tapBtn" type="button" aria-label="Tap">
+        <span class="tap-btn__ring" aria-hidden="true"></span>
+        <span class="tap-btn__face" aria-hidden="true"></span>
+        <span class="tap-btn__text">TAP</span>
       </button>
-    </form>
 
-    <div class="chat-footer muted">
-      Enter — отправить • Shift+Enter — новая строка
+      <div class="energy">
+        <div class="energy-row">
+          <span class="muted">Energy</span>
+          <span class="muted" id="energyUi">100/100</span>
+        </div>
+        <div class="energy-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="energy-bar__fill" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="clicker-footer muted">
+      Нажимай • позже добавим анимацию монет и API
     </div>
   </div>
 </section>

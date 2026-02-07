@@ -9,14 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // ---- Дата в шапке (не упадёт, если элемента нет)
-  const todayEl = document.getElementById("todayText");
-  if (todayEl) {
-    const d = new Date();
-    const opts = { weekday: "short", day: "2-digit", month: "short" };
-    todayEl.textContent = d.toLocaleDateString("ru-RU", opts);
-  }
-
   // ---- путь к экрану (файлы лежат в screens/*.html)
   function screenUrl(name) {
     return `screens/${name}.html?v=2`; // важно: без ведущего "/"
@@ -31,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         content.innerHTML = `
-          <div style="padding:16px; font-family:sans-serif;">
+          <div style="padding:16px; font-family:system-ui;">
             <h3>Экран не найден</h3>
             <p>name: <b>${name}</b></p>
             <p>url: <code>${url}</code></p>
@@ -46,13 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // init после вставки HTML
       if (name === "home") initHome();
       if (name === "pomodoro") initPomodoro();
-      if (name === "tasks") initTasks();
+      if (name === "taks") initTasks();
       if (name === "click") initClick();
+      if (name === "ai") initChat();
       // profile пока без JS
     } catch (e) {
       console.error(e);
       content.innerHTML = `
-        <div style="padding:16px; font-family:sans-serif;">
+        <div style="padding:16px; font-family:system-ui;">
           <h3>Ошибка загрузки экрана</h3>
           <p>Открой Console (F12).</p>
         </div>
@@ -84,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const openTasks = document.getElementById("openTasksFromHome");
 
     if (goPomodoro) goPomodoro.addEventListener("click", () => setActive("pomodoro"));
-    if (openTasks) openTasks.addEventListener("click", () => setActive("tasks"));
+    if (openTasks) openTasks.addEventListener("click", () => setActive("taks"));
   }
 
   // --- POMODORO handlers
@@ -156,24 +149,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- TASKS handlers (заглушка)
   function initTasks() {}
 
-  // --- CLICKER (Hamster-like) handlers
+  // --- CLICKER handlers (работает с твоим click.html: coinsUi/cpcUi/cphUi/energyUi)
   function initClick() {
     const els = {
-      coinsText: document.getElementById("coinsText"),
-      energyText: document.getElementById("energyText"),
-      energyMaxText: document.getElementById("energyMaxText"),
-      tapPowerText: document.getElementById("tapPowerText"),
-      incomeText: document.getElementById("incomeText"),
-      tapPriceText: document.getElementById("tapPriceText"),
-      incomePriceText: document.getElementById("incomePriceText"),
+      coinsUi: document.getElementById("coinsUi"),
+      cpcUi: document.getElementById("cpcUi"),
+      cphUi: document.getElementById("cphUi"),
+      energyUi: document.getElementById("energyUi"),
+      energyFill: document.querySelector(".energy-bar__fill"),
       tapBtn: document.getElementById("tapBtn"),
-      buyTapBtn: document.getElementById("buyTapBtn"),
-      buyIncomeBtn: document.getElementById("buyIncomeBtn"),
+      resetBtn: document.getElementById("clickResetBtn"),
     };
 
-    // если click.html ещё старый и элементов нет — выходим
-    if (!els.tapBtn) {
-      console.warn("Clicker: не найден #tapBtn (проверь click.html)");
+    if (!els.tapBtn || !els.coinsUi) {
+      console.warn("Clicker: не найден #tapBtn или #coinsUi (проверь click.html)");
       return;
     }
 
@@ -187,17 +176,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const defaults = {
       coins: 0,
-      tapPower: 1,
-      incomePerHour: 0,
+      coinsPerClick: 1,
+      coinsPerHour: 0,
 
       energy: 100,
       energyMax: 100,
 
-      tapLevel: 0,
-      incomeLevel: 0,
-
       lastTick: Date.now(),
     };
+
+    // энергия: +0.8 в секунду (≈48/мин)
+    const energyRegenPerSec = 0.8;
 
     function load() {
       try {
@@ -212,30 +201,13 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem(KEY, JSON.stringify(s));
     }
 
-    // Экономика
-    const priceTapBase = 20;
-    const priceIncomeBase = 50;
-
-    // энергия: +0.8 в секунду (≈48/мин)
-    const energyRegenPerSec = 0.8;
-
-    let state = load();
-
-    function calcTapPrice(s) {
-      return Math.floor(priceTapBase * Math.pow(1.15, s.tapLevel));
-    }
-
-    function calcIncomePrice(s) {
-      return Math.floor(priceIncomeBase * Math.pow(1.17, s.incomeLevel));
-    }
-
     function applyTick(s) {
       const now = Date.now();
       const dtSec = Math.max(0, (now - s.lastTick) / 1000);
 
-      // пассив
-      if (s.incomePerHour > 0) {
-        s.coins += s.incomePerHour * (dtSec / 3600);
+      // пассивный доход
+      if (s.coinsPerHour > 0) {
+        s.coins += s.coinsPerHour * (dtSec / 3600);
       }
 
       // реген энергии
@@ -246,43 +218,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function formatCoins(x) {
-      const v = Math.floor(x);
-      return v.toLocaleString("ru-RU");
+      return Math.floor(x).toLocaleString("ru-RU");
     }
 
     function render(s) {
-      els.coinsText.textContent = formatCoins(s.coins);
-      els.energyText.textContent = Math.floor(s.energy);
-      els.energyMaxText.textContent = s.energyMax;
-      els.tapPowerText.textContent = s.tapPower;
-      els.incomeText.textContent = Math.floor(s.incomePerHour);
+      els.coinsUi.textContent = formatCoins(s.coins);
+      if (els.cpcUi) els.cpcUi.textContent = `+${s.coinsPerClick}`;
+      if (els.cphUi) els.cphUi.textContent = `+${Math.floor(s.coinsPerHour)}`;
 
-      els.tapPriceText.textContent = calcTapPrice(s).toLocaleString("ru-RU");
-      els.incomePriceText.textContent = calcIncomePrice(s).toLocaleString("ru-RU");
+      if (els.energyUi) {
+        const e = Math.floor(s.energy);
+        els.energyUi.textContent = `${e}/${s.energyMax}`;
+      }
+
+      if (els.energyFill) {
+        const pct = Math.max(0, Math.min(100, (s.energy / s.energyMax) * 100));
+        els.energyFill.style.width = `${pct}%`;
+      }
 
       const noEnergy = Math.floor(s.energy) <= 0;
       els.tapBtn.disabled = noEnergy;
       els.tapBtn.classList.toggle("is-disabled", noEnergy);
     }
 
-    // применяем оффлайн-тик
+    let state = load();
     state = applyTick(state);
     save(state);
     render(state);
 
-    // интервал тика
     window.__clickerTimer = setInterval(() => {
       state = applyTick(state);
       save(state);
       render(state);
     }, 1000);
 
-    // TAP
     els.tapBtn.addEventListener("click", () => {
       if (Math.floor(state.energy) <= 0) return;
 
       state.energy -= 1;
-      state.coins += state.tapPower;
+      state.coins += state.coinsPerClick;
 
       save(state);
       render(state);
@@ -293,139 +267,119 @@ document.addEventListener("DOMContentLoaded", () => {
       els.tapBtn.classList.add("tap-anim");
     });
 
-    // Upgrade tap
-    els.buyTapBtn.addEventListener("click", () => {
-      const price = calcTapPrice(state);
-      if (state.coins < price) return;
-
-      state.coins -= price;
-      state.tapLevel += 1;
-      state.tapPower += 1;
-
+    els.resetBtn?.addEventListener("click", () => {
+      state = { ...defaults, lastTick: Date.now() };
       save(state);
       render(state);
     });
+  }
 
-    // Upgrade passive income
-    els.buyIncomeBtn.addEventListener("click", () => {
-      const price = calcIncomePrice(state);
-      if (state.coins < price) return;
+  // --- CHAT (заглушка UI + запрос к /api/chat)
+  function initChat() {
+    const box = document.getElementById("chatBox");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("chatInput");
+    const clearBtn = document.getElementById("chatClearBtn");
+    const sendBtn = document.getElementById("chatSendBtn");
 
-      state.coins -= price;
-      state.incomeLevel += 1;
-      state.incomePerHour += 30;
+    if (!box || !form || !input) return;
 
-      save(state);
-      render(state);
+    const KEY = "chat_history_v1";
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveHistory(history) {
+      localStorage.setItem(KEY, JSON.stringify(history));
+    }
+
+    let history = loadHistory(); // {role:"user"|"assistant", content:"..."}
+
+    function addMessage(role, text) {
+      const row = document.createElement("div");
+      row.className = `msg-row ${role === "user" ? "user" : "bot"}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${role === "user" ? "user" : "bot"}`;
+      bubble.textContent = text;
+
+      row.appendChild(bubble);
+      box.appendChild(row);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderAll() {
+      box.innerHTML = "";
+      for (const m of history) addMessage(m.role, m.content);
+    }
+
+    async function sendMessage(text) {
+      history.push({ role: "user", content: text });
+      saveHistory(history);
+      addMessage("user", text);
+
+      // typing bubble
+      const row = document.createElement("div");
+      row.className = "msg-row bot";
+      const bubble = document.createElement("div");
+      bubble.className = "bubble bot";
+      bubble.textContent = "Печатает…";
+      row.appendChild(bubble);
+      box.appendChild(row);
+      box.scrollTop = box.scrollHeight;
+
+      sendBtn.disabled = true;
+      input.disabled = true;
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, history: history.slice(-12) }),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        const reply = data.reply ?? "Нет ответа";
+
+        bubble.textContent = reply;
+
+        history.push({ role: "assistant", content: reply });
+        saveHistory(history);
+      } catch (e) {
+        console.error(e);
+        bubble.textContent = "Ошибка: сервер недоступен или /api/chat не настроен.";
+      } finally {
+        sendBtn.disabled = false;
+        input.disabled = false;
+        input.focus();
+      }
+    }
+
+    clearBtn?.addEventListener("click", () => {
+      history = [];
+      saveHistory(history);
+      renderAll();
     });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      sendMessage(text);
+    });
+
+    renderAll();
   }
 
   // старт
   setActive("home");
 });
-function initChat() {
-  const box = document.getElementById("chatBox");
-  const form = document.getElementById("chatForm");
-  const input = document.getElementById("chatInput");
-  const clearBtn = document.getElementById("chatClearBtn");
-  const sendBtn = document.getElementById("chatSendBtn");
-
-  if (!box || !form || !input) return;
-
-  const KEY = "chat_history_v1";
-
-  function loadHistory() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    localStorage.setItem(KEY, JSON.stringify(history));
-  }
-
-  let history = loadHistory(); // массив объектов: {role:"user"|"assistant", content:"..."}
-
-  function addMessage(role, text) {
-    const el = document.createElement("div");
-    el.className = `msg ${role === "user" ? "user" : "bot"}`;
-    el.textContent = text;
-    box.appendChild(el);
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function renderAll() {
-    box.innerHTML = "";
-    for (const m of history) {
-      addMessage(m.role, m.content);
-    }
-  }
-
-  async function sendMessage(text) {
-    // UI: покажем сообщение пользователя
-    history.push({ role: "user", content: text });
-    saveHistory(history);
-    addMessage("user", text);
-
-    // UI: временный "typing"
-    const typingEl = document.createElement("div");
-    typingEl.className = "msg bot";
-    typingEl.textContent = "Печатает…";
-    box.appendChild(typingEl);
-    box.scrollTop = box.scrollHeight;
-
-    sendBtn.disabled = true;
-    input.disabled = true;
-
-    try {
-      // ВАЖНО: этот эндпоинт должен быть на твоём сервере
-      const res = await fetch("api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: text,
-          history: history.slice(-12) // отправляем последние 12 сообщений
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const data = await res.json(); // ожидаем { reply: "..." }
-      const reply = data.reply ?? "Нет ответа";
-
-      // заменить typing на ответ
-      typingEl.textContent = reply;
-
-      history.push({ role: "assistant", content: reply });
-      saveHistory(history);
-    } catch (e) {
-      console.error(e);
-      typingEl.textContent = "Ошибка: сервер недоступен или эндпоинт /api/chat не настроен.";
-    } finally {
-      sendBtn.disabled = false;
-      input.disabled = false;
-      input.focus();
-    }
-  }
-
-  clearBtn?.addEventListener("click", () => {
-    history = [];
-    saveHistory(history);
-    renderAll();
-  });
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    sendMessage(text);
-  });
-
-  renderAll();
-}

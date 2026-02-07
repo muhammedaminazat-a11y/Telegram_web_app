@@ -1,0 +1,15 @@
+/* home specific */
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+.hero__label{ color: var(--muted); font-size:12px; }
+.hero__value{ font-size: 20px; font-weight: 900; margin-top: 6px; }
+.hero__hint{ color: var(--muted); font-size:12px; margin-top: 4px; }
+
+.stat{ padding: 14px; text-align:left; }
+.stat__label{ color: var(--muted); font-size:12px; }
+.stat__value{ font-size: 20px; font-weight: 800; margin-top: 6px; }
+.stat__hint{ color: var(--muted); font-size:12px; margin-top: 4px; }
