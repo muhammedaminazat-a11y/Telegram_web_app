@@ -26,5 +26,9 @@ class ClickOut(ClickBase):
     id: int = Field(..., gt=0, description="Уникальный идентификатор клика")
 
 class ClickDeleteResponse(BaseModel):
-    message: str
+    message: str = Field(..., description="Сообщение об успешном удалении клика")
     click: ClickOut
+
+class ClickGlasses(BaseModel):
+     profile_id: int = Field(..., gt=0, description="ID профиля")
+     glasses: int = Field(..., ge=0, description="Количество очков")
