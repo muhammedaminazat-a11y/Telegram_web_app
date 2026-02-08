@@ -1,0 +1,9 @@
+# Всегда использовать LF для текстовых файлов
+*.py text eol=lf
+*.ini text eol=lf
+*.env text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+# LF (Line Feed) — стандартный символ конца строки в Linux и macOS.
+# CRLF (Carriage Return + Line Feed) — стандартный символ конца строки в Windows.
+# Используется для того, чтобы git автоматически конвертировал окончания строк для разных операционных систем.

@@ -1,6 +1,14 @@
 # Виртуальное окружение
 .env
+.env.* # env.py (alembic)
 venv/
+
+# Миграция Alembic
+migrations/__pycache__/
+
+# IDE
+.vscode/
+.idea/
 
 # Кэш Python
 __pycache__/
