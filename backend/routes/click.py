@@ -4,6 +4,7 @@ from backend.schemas.click import (
     ClickCreate, 
     ClickUpdate,
     ClickOut,
+    ClickDeleteResponse,
 )
 
 router = APIRouter(
@@ -35,7 +36,7 @@ def update_click(click_id: int, click: ClickUpdate):
    return click_service.update_click(click_id, click)
 
 # эндпоинт удаление кликера 
-@router.delete("/{click_id}", response_model=ClickOut)
+@router.delete("/{click_id}", response_model=ClickDeleteResponse)
 def delete_click(click_id: int):
     return click_service.delete_click(click_id)
 
