@@ -7,8 +7,6 @@ class ClickBase(BaseModel):
     count: int = Field(0, ge=0, description="Количество кликов")
 
 class ClickCreate(ClickBase):
-    name: str 
-    count: int = 0
     # Пример ввода клика
     class Config:
         json_schema_extra = {
@@ -25,10 +23,12 @@ class ClickUpdate(BaseModel):
 class ClickOut(ClickBase):
     id: int = Field(..., gt=0, description="Уникальный идентификатор клика")
 
+    class Config:
+        from_attributes = True
+
 class ClickDeleteResponse(BaseModel):
     message: str = Field(..., description="Сообщение об успешном удалении клика")
-    click: ClickOut
+    deleted_click: ClickOut
 
-class ClickGlasses(BaseModel):
-     profile_id: int = Field(..., gt=0, description="ID профиля")
-     glasses: int = Field(..., ge=0, description="Количество очков")
+    class Config:
+        from_attributes = True

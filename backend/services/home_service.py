@@ -1,33 +1,48 @@
 from fastapi import HTTPException
-from backend.services import task_service, pomodoro_service
-from backend.schemas.home import HomeRootResponse, HomeAboutResponse, Stats
-from backend.services.click_service import get_click_glasses
+from backend.services import pomodoro_service
+from backend.schemas.home import HomeRootResponse, HomeAboutResponse, Stats, ClickGlasses
+
+# временные данные (словари)
+home_data = {
+    "message": "Привет, это главная страница!",
+    "service": "Приложение для повышения производительности",
+    "description": "Количество задач, Метод Pomodoro, игры и кликер",
+    "tasks_count": 5,
+    "pomodoro_progress": 40,
+    "click_glasses": {
+        "profile_id": 1,
+        "glasses": 12
+    }
+}
 
 def get_pomodoro_progress_percent(user_id: int) -> int:
     try:
         progress = pomodoro_service.progress(user_id)
-        if progress.total == 0:
+        # если progress — словарь
+        total = progress.get("total", 0)
+        elapsed = progress.get("elapsed", 0)
+        if total == 0:
             return 0
-        return int(progress.elapsed / progress.total * 100)
+        return int(elapsed / total * 100)
     except HTTPException:
         return 0
 
 
 def get_home_root(user_id: int) -> HomeRootResponse:   
     return HomeRootResponse(
-        message="Привет, это главная страница!",
-        tasks_count=task_service.get_tasks_count(),
-        pomodoro_progress=get_pomodoro_progress_percent(user_id),
-        click_glasses=get_click_glasses(user_id)
+        message=home_data["message"],
+        tasks_count=home_data["tasks_count"],
+        pomodoro_progress=home_data["pomodoro_progress"],
+        click_glasses=ClickGlasses(**home_data["click_glasses"])
     )
 
 def get_home_about(user_id: int = 1) -> HomeAboutResponse:
     return HomeAboutResponse(
-        service="Приложение для повышения производительности",
-        description="Количество задач, Метод Pomodoro, игры и кликер",
+        service=home_data["service"],
+        description=home_data["description"],
         stats=Stats(
-            tasks_count=task_service.get_tasks_count(),
-            pomodoro_progress=get_pomodoro_progress_percent(user_id),
-            click_glasses=get_click_glasses(user_id) 
+            tasks_count=home_data["tasks_count"],
+            pomodoro_progress=home_data["pomodoro_progress"],
+            click_glasses=ClickGlasses(**home_data["click_glasses"])
         )
     )
