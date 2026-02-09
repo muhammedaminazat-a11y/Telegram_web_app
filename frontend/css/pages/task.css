@@ -1,0 +1,63 @@
+.task-page{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card{ padding: 14px; }
+
+.task-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.task-sub{ margin-top: 4px; font-size: 12px; }
+
+.task-filters{ margin-bottom: 10px; }
+
+.task-stats{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+
+.stat-pill{
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  padding: 10px;
+}
+.stat-pill__label{ font-size: 11px; }
+.stat-pill__value{
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+/* переиспользуем общий .task но добавим кнопки */
+.task{
+  position: relative;
+}
+
+.task .btn{
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+
+.task-empty{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: var(--radius2);
+  border: 1px dashed rgba(255,255,255,.18);
+  background: rgba(255,255,255,.03);
+  text-align:center;
+}
+.task-empty__title{
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+.task-empty__text{ font-size: 12px; }

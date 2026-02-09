@@ -1,5 +1,5 @@
 // Если бек на другом порту — укажи явно:
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "http://10.171.7.173:8000";
 // Если фронт и бек на одном домене — оставь ""
 
 async function request(path, options = {})  {

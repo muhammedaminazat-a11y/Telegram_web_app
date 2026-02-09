@@ -3,6 +3,20 @@ import { apiTasks } from "../api.js";
 export function initTask() {
   const list = document.getElementById("tasksList");
   const addBtn = document.getElementById("addTaskBtn");
+  const totalEl = document.getElementById("tasksTotal");
+  const doneEl = document.getElementById("tasksDone");
+  const leftEl = document.getElementById("tasksLeft");
+  const emptyEl = document.getElementById("tasksEmpty");
+
+  const total = tasks.length;
+  const done = tasks.filter(t => t.done).length;
+  const left = total - done;
+
+  if (totalEl) totalEl.textContent = total;
+  if (doneEl) doneEl.textContent = done;
+  if (leftEl) leftEl.textContent = left;
+
+  if (emptyEl) emptyEl.hidden = total !== 0;
 
   if (!list || !addBtn) return;
 

@@ -1,20 +1,44 @@
 <section class="task-page">
-  <div class="card">
-    <div class="section-head">
-      <div class="section-title">Задачи</div>
+  <div class="card task-card">
+    <div class="task-head">
+      <div>
+        <div class="section-title" style="margin:0">Задачи</div>
+        <div class="muted task-sub">Добавляй задачи, отмечай выполненные</div>
+      </div>
+
       <button class="btn btn-primary btn-sm" id="addTaskBtn" type="button">+ Добавить</button>
     </div>
 
-    <div class="filters" role="tablist" aria-label="Фильтр задач">
-      <button class="filter is-active" type="button" data-filter="all">Все</button>
-      <button class="filter" type="button" data-filter="today">Сегодня</button>
-      <button class="filter" type="button" data-filter="done">Готово</button>
+    <!-- фильтры -->
+    <div class="segmented task-filters" role="tablist" aria-label="Фильтр задач">
+      <button class="seg is-active" data-filter="all" type="button">Все</button>
+      <button class="seg" data-filter="today" type="button">Сегодня</button>
+      <button class="seg" data-filter="done" type="button">Готово</button>
     </div>
 
-    <div class="muted task-hint" id="taskHint" style="display:none"></div>
+    <!-- статистика -->
+    <div class="task-stats">
+      <div class="stat-pill">
+        <div class="muted stat-pill__label">Всего</div>
+        <div class="stat-pill__value" id="tasksTotal">0</div>
+      </div>
+      <div class="stat-pill">
+        <div class="muted stat-pill__label">Сделано</div>
+        <div class="stat-pill__value" id="tasksDone">0</div>
+      </div>
+      <div class="stat-pill">
+        <div class="muted stat-pill__label">Осталось</div>
+        <div class="stat-pill__value" id="tasksLeft">0</div>
+      </div>
+    </div>
 
-    <ul class="task-list" id="tasksList">
-   
-    </ul>
+    <!-- список -->
+    <ul class="task-list" id="tasksList"></ul>
+
+    <!-- пустой стейт -->
+    <div class="task-empty" id="tasksEmpty" hidden>
+      <div class="task-empty__title">Пусто</div>
+      <div class="muted task-empty__text">Нажми “+ Добавить”, чтобы создать первую задачу.</div>
+    </div>
   </div>
 </section>
