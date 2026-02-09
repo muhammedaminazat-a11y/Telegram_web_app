@@ -125,6 +125,8 @@ export function initHome(setActive) {
   document.getElementById("goSnakeGame")?.addEventListener("click", () => {
     alert("Змейка скоро 🙂");
   });
+  document.getElementById("goReactionGame")?.addEventListener("click", () => setActive("reaction"));
+
 
   // стартовая загрузка
   load();

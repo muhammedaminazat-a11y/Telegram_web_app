@@ -4,6 +4,8 @@ import { initTask } from "./pages/task.js";
 import { initClick } from "./pages/click.js";
 import { initChat } from "./pages/chat.js";
 import { initProfile } from "./pages/profile.js";
+import { initReaction } from "./pages/reaction.js";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.getElementById("app-content");
@@ -43,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (name === "click") initClick();
       if (name === "ai") initChat();
       if (name === "profile") initProfile();
+      if (name === "reaction") initReaction();
 
     } catch (e) {
       console.error(e);

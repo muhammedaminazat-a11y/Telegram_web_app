@@ -1,0 +1,48 @@
+<section class="reaction-page">
+  <div class="card reaction-card">
+    <div class="reaction-head">
+      <div>
+        <div class="section-title" style="margin:0">Reaction ⚡</div>
+        <div class="muted" id="reactionHint">Нажми «Старт» и жди зелёного</div>
+      </div>
+
+      <div class="reaction-best">
+        <div class="muted" style="font-size:12px">Best</div>
+        <div class="reaction-best__val" id="bestMs">—</div>
+      </div>
+    </div>
+
+    <div class="reaction-box" id="reactionBox">
+      <div class="reaction-text" id="reactionText">Готов?</div>
+    </div>
+
+    <button class="btn btn-primary reaction-btn" id="reactionBtn" type="button">
+      Старт
+    </button>
+
+    <div class="muted reaction-result" id="reactionResult"></div>
+    <div class="reaction-stats">
+  <div class="stat-pill">
+    <div class="muted">Best</div>
+    <div class="stat-val" id="bestMs">—</div>
+  </div>
+  <div class="stat-pill">
+    <div class="muted">Avg (5)</div>
+    <div class="stat-val" id="avg5Ms">—</div>
+  </div>
+  <div class="stat-pill">
+    <div class="muted">Tries</div>
+    <div class="stat-val" id="triesCount">0</div>
+  </div>
+</div>
+
+<div class="reaction-history">
+  <div class="section-title" style="margin:0 0 10px">История</div>
+  <ol class="history-list" id="historyList"></ol>
+
+  <button class="btn btn-ghost btn-sm" id="historyClearBtn" type="button">
+    Очистить историю
+  </button>
+</div>
+  </div>
+</section>
