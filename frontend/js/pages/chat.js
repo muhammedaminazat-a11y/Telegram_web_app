@@ -1,4 +1,4 @@
-const API_BASE = "const API_BASE = "http://localhost:8000";
+const API_BASE = "http://localhost:8000";
 
 export function initChat() {
   const box = document.getElementById("chatBox");
