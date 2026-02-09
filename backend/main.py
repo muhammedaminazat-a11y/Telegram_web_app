@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routes import ai, click, home, pomodoro, profile, task, task_log
+from backend.routes import click, click_glasses, home, pomodoro, profile, task, task_log
 
 # создания экземпляра приложения FastAPI
 app = FastAPI(title="Telegram Mini App To Do List API")
@@ -14,9 +14,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# подключение роутера для задач
-app.include_router(ai.router)
+# подключение роутеров для cущностей
 app.include_router(click.router)
+app.include_router(click_glasses.router)
 app.include_router(home.router)
 app.include_router(pomodoro.router)
 app.include_router(profile.router)
