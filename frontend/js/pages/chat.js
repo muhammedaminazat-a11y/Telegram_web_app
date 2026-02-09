@@ -59,7 +59,7 @@ export function initChat() {
     input.disabled = true;
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text, history: history.slice(-12) }),
