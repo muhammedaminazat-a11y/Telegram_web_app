@@ -58,5 +58,8 @@ def get_click_glasses(click_id: int):
 
 # эндпоинт увеличения счётчика кликов
 @router.patch("/{click_id}/increment", response_model=ClickOut)
-def increment_click(click_id: int):
-    return click_service.increment_click(click_id)
+def increment_click(click_id: int, db: Session = Depends(get_db)):
+    updated = click_service.increment_click(db, click_id)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Клик не найден")
+    return updated
