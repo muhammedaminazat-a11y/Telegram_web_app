@@ -5,6 +5,7 @@ import { initClick } from "./pages/click.js";
 import { initChat } from "./pages/chat.js";
 import { initProfile } from "./pages/profile.js";
 import { initReaction } from "./pages/reaction.js";
+import { initSnake } from "./pages/snake.js";
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (name === "ai") initChat();
       if (name === "profile") initProfile();
       if (name === "reaction") initReaction();
+      if (name === "snake") initSnake();
+
 
     } catch (e) {
       console.error(e);

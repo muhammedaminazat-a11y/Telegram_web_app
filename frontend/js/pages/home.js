@@ -122,9 +122,11 @@ export function initHome(setActive) {
 
   // ---- Games
   document.getElementById("goClickGame")?.addEventListener("click", () => setActive("click"));
-  document.getElementById("goSnakeGame")?.addEventListener("click", () => {
-    alert("Змейка скоро 🙂");
-  });
+  const goSnakeGame = document.getElementById("goSnakeGame");
+      goSnakeGame?.addEventListener("click", () => {
+      setActive("snake");
+      });
+
   document.getElementById("goReactionGame")?.addEventListener("click", () => setActive("reaction"));
 
 
