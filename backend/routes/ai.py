@@ -10,7 +10,7 @@ router = APIRouter(
     tags=["ai"]
 )
 
-@router.post("ai_/chat", response_model=AIResponse)
+@router.post("/chat", response_model=AIResponse)
 def ai_chat(request: AIRequest):
     return ai_service.ask_ai(request)
 

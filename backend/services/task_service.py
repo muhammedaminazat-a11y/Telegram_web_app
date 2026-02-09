@@ -1,40 +1,61 @@
+from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from backend.schemas.task import TaskCreate, TaskUpdate, TaskOut
+from backend.models.task import Task
+from backend.models.task_log import TaskLog
+from backend.services import task_log_service
+from backend.schemas.task import (
+    TaskCreate,
+    TaskUpdate,
+    TaskOut,
+)
 
-# временное хранилище словарь (замена на PostgreSQL)
-tasks = {}
+def get_tasks(db: Session):
+    return db.query(Task).all() # db.query - запрос к таблице
 
-# эндпоинт получения списка задач
-def get_tasks() -> list[TaskOut]:
-    return list(tasks.values())
+def get_tasks_count(db: Session) -> int:
+    return db.query(Task).count()
 
-# эндпоинт получения одной задачи
-def get_task(task_id: int) -> TaskOut:
-    if task_id in tasks:
-        return tasks[task_id]
-    raise HTTPException(status_code=404, detail="Задача не найдена")
-
-# эндпоинт создание задачи
-def create_task(task: TaskCreate) -> TaskOut:
-    task_id = len(tasks) + 1 # при создании id увеличивается на 1
-    tasks[task_id] = {
-        "id": task_id,
-        "title": task.title,
-        "description": task.description,
-        "done": task.done
-    }
-    return tasks[task_id]
-
-# эндпоинт обновления задачи
-def update_task(task_id: int, task: TaskUpdate) -> TaskOut:
-    if task_id not in tasks:
+def get_task(db: Session, task_id: int) -> TaskOut:
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
         raise HTTPException(status_code=404, detail="Задача не найдена")
-    tasks[task_id].update(task.dict(exclude_unset=True))
-    return tasks[task_id]
+    return task
 
-# эндпоинт удаление задачи
-def delete_task(task_id: int) -> dict:
-    if task_id not in tasks:
-       raise HTTPException(status_code=404, detail="Задача не найдена")
-    deleted = tasks.pop(task_id)
-    return {"message": f"Задача {task_id} удалена", "task": deleted}
+def create_task(db: Session, task: TaskCreate):
+    new_task= Task(**task.dict())
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+
+    # логирование операций
+    task_log_service.create_log(db, new_task.id, "CREATE")
+    return new_task
+
+def update_task(db: Session, task_id: int, task: TaskUpdate):
+    db_task = db.query(Task).filter(Task.id == task_id).first()
+    if not db_task: 
+        raise HTTPException(status_code=404, detail="Задача не найдена")
+    
+    for key, value in task.dict(exclude_unset=True).items():
+         setattr(db_task, key, value)
+
+    db.commit()
+    db.refresh(db_task)
+
+    # логирование операций
+    task_log_service.create_log(db, db_task.id, "UPDATE")
+    return db_task
+
+def delete_task(db: Session, task_id: int):
+    db_task = db.query(Task).filter(Task.id == task_id).first()
+    if not db_task:
+         raise HTTPException(status_code=404, detail="Задача не найдена")
+
+    task_log_service.create_log(db, task_id, "DELETE")
+
+    db.query(TaskLog).filter(TaskLog.task_id == task_id).delete()
+
+    db.delete(db_task)
+    db.commit()
+
+    return db_task

@@ -1,12 +1,12 @@
 from pydantic import BaseModel, Field
 
-# ---- Pydantic схемы для Tasks (задачи) ----
+# ---- Pydantic схемы для Task (задачи) ----
 # --- Получение задачи ---
 class TaskBase(BaseModel):
     # -- Расширенная валидация данных -- 
     title: str = Field(..., min_length=3, max_length=50, description="Название задачи") # ..., обязательное поле 
     description: str | None = Field(None, min_length=3, max_length=100, description="Описание задачи") 
-    done: bool = Field(False, description="Статус задачи") # по умолчанию задача не выполнена
+    done: bool = Field(False) # по умолчанию задача не выполнена
 
 # --- Создание задачи ---
 class TaskCreate(TaskBase):
@@ -19,6 +19,7 @@ class TaskCreate(TaskBase):
                 "done": False 
             }
         }
+        orm_mode = True # подключение к бд PostgreSQL ORM
 # --- Обновление задачи ---
 class TaskUpdate(BaseModel):
     # -- Расширенная валидация данных -- 
@@ -31,6 +32,9 @@ class TaskUpdate(BaseModel):
 class TaskOut(TaskBase):
     id: int = Field(..., gt=0, description="Уникальный идентификатор задачи")
     # id: gt=0 задачи создаются от 1 и далее (id не может быть 0 и отрицательным числом) 
+
+    class Config:
+        from_attributes = True # подключение к бд PostgreSQL ORM
      
 # --- Ответ при удалении --- 
 class TaskDeleteResponse(BaseModel):
