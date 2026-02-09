@@ -1,12 +1,12 @@
-// Если бек на другом порту — укажи явно:
-const API_BASE = "http://192.168.1.104:8000";
-// Если фронт и бек на одном домене — оставь ""
+const API_BASE = window.AI_API_BASE || "http://localhost:8001";
 
 async function request(path, options = {}) {
-  const res = await fetch(API_BASE + path, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
+  const res = await fetch(`${API_BASE}/api/ai`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: text }),
   });
+
 
   if (!res.ok) {
     const text = await res.text();
