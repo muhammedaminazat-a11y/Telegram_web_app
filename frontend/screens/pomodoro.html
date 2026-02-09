@@ -1,26 +1,36 @@
-<section>
-  <div class="card">
-    <div class="section-title">Помидор 🍅</div>
+<section class="pomodoro-page">
+  <div class="card pom-card">
+    <div class="pom-head">
+      <div>
+        <div class="section-title" style="margin:0">Метод Pomodoro</div>
+      </div>
 
-    <div class="timer">
-      <div class="timer__ring" aria-hidden="true"></div>
-      <div class="timer__time" id="timerText">25:00</div>
-      <div class="timer__hint">Фокус → перерыв → фокус</div>
+      <button class="btn btn-ghost btn-sm" id="resetTimerBtn" type="button" aria-label="Сброс">
+        Сброс
+      </button>
     </div>
 
-    <div class="row">
-      <button class="btn btn-primary" id="startTimerBtn">Старт</button>
-      <button class="btn btn-ghost" id="resetTimerBtn">Сброс</button>
+    <div class="pom-ring-wrap">
+      <div class="pom-ring" id="pomRing" aria-label="Прогресс таймера">
+        <div class="pom-time" id="timerText">25:00</div>
+        <div class="pom-sub muted" id="pomSub">осталось</div>
+      </div>
+    </div>
+
+    <div class="pom-actions">
+      <button class="btn btn-primary pom-start" id="startTimerBtn" type="button">
+        Старт
+      </button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Режим</div>
+  <div class="card pom-card2">
+    <div class="section-title" style="margin:0 0 10px">Режим</div>
+
     <div class="segmented" role="tablist" aria-label="Режим помидора">
-      <button class="seg is-active" data-min="25">25</button>
-      <button class="seg" data-min="45">45</button>
-      <button class="seg" data-min="50">50</button>
+      <button class="seg is-active" data-min="25" type="button">25</button>
+      <button class="seg" data-min="45" type="button">45</button>
+      <button class="seg" data-min="50" type="button">50</button>
     </div>
-    <div class="muted">Выбери длительность фокуса, потом жми “Старт”.</div>
   </div>
 </section>

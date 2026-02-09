@@ -1,26 +1,53 @@
-<section>
-  <div class="card hero">
-    <div class="hero__text">
-      <div class="hero__label">Фокус на сегодня</div>
-      <div class="hero__value"><span id="doneCount">0</span>/<span id="planCount">5</span> задач</div>
-      <div class="hero__hint">Закрой задачи → получишь “награду”.</div>
+<section class="home-page">
+  <!-- Profile mini -->
+  <div class="card home-profile">
+    <div class="home-profile__left">
+      <div class="home-avatar">
+        <img id="homeAvatar" src="frontend/image/profile.svg" alt="Аватар" />
+      </div>
+
+      <div class="home-user">
+        <div class="home-name" id="homeName">Пользователь</div>
+        <div class="home-username muted" id="homeUsername">@username</div>
+        <div class="home-id muted">ID: <b id="homeId">—</b></div>
+      </div>
     </div>
-    <button class="btn btn-primary" id="addQuickTaskBtn">+ Быстрая задача</button>
+
+    <button class="btn btn-ghost btn-sm" id="goProfileFromHome" type="button">
+      Профиль
+    </button>
   </div>
 
-  <div class="grid-2">
-    <div class="card stat">
-      <div class="stat__label">Шаги</div>
-      <div class="stat__value">12 000</div>
-      <div class="stat__hint">цель 10–15k</div>
+  <!-- Today tasks header -->
+  <div class="card home-tasks">
+    <div class="section-head">
+      <div class="section-title" style="margin:0">Сегодня</div>
+      <button class="btn btn-primary btn-sm" id="addQuickTaskBtn" type="button">+ Задача</button>
     </div>
-    <div class="card stat">
-      <div class="stat__label">Фокус</div>
-      <div class="stat__value">25 мин</div>
-      <div class="stat__hint">помидор</div>
-    </div>
+
+    <div class="muted home-tasks__hint" id="homeTaskHint">Загружаю задачи…</div>
+
+    <ul class="task-list" id="homeTaskList"></ul>
+
+    <button class="btn btn-ghost" id="openTasksFromHome" type="button" style="margin-top:12px; width:100%">
+      Открыть все задачи →
+    </button>
   </div>
-  <div class="card">
-    <div class="section-title">План на сегодня</div>
+
+  <!-- Games -->
+  <div class="card home-games">
+    <div class="section-title" style="margin:0 0 10px">Игры</div>
+
+    <div class="games-row">
+      <button class="game-btn" id="goClickGame" type="button">
+        <div class="game-btn__title">Click</div>
+        <div class="muted game-btn__sub">тап-игра</div>
+      </button>
+
+      <button class="game-btn" id="goSnakeGame" type="button">
+        <div class="game-btn__title">Змейка</div>
+        <div class="muted game-btn__sub">скоро</div>
+      </button>
+    </div>
   </div>
 </section>
