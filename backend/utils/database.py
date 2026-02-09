@@ -11,10 +11,13 @@ if not DATABASE_URL:
 
 engine = create_engine(DATABASE_URL, echo=True)
 
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 class Base(DeclarativeBase):
     pass
+
+# Импорт моделей, чтобы они зарегистрировались в Base.metadata
+from backend.models import task, task_log, click, click_glasses
 
 def get_db():
     db = SessionLocal()

@@ -1,50 +1,50 @@
-from fastapi import HTTPException
-from backend.schemas.click import ClickCreate, ClickUpdate, ClickOut, ClickGlasses
-
-# временное хранилище
-_clicks: dict[int, ClickOut] = {}
-_glasses: dict[int, int] = {}
-
-# получить список кликов
-def get_clicks() -> list[ClickOut]:
-    return list(_clicks.values())
-
-# получить один клик
-def get_click(click_id: int) -> ClickOut:
-    if click_id not in _clicks:
-        raise HTTPException(status_code=404, detail="Click не найден")
-    return _clicks[click_id]
+from sqlalchemy.orm import Session
+from backend.models.click import Click
+from backend.schemas.click import ClickCreate, ClickUpdate, ClickOut
 
 # создать клик
-def create_click(click: ClickCreate) -> ClickOut:
-    click_id = len(_clicks) + 1
-    new_click = ClickOut(id=click_id, **click.dict())
-    _clicks[click_id] = new_click
-    return new_click
+def create_click(db: Session, data: ClickCreate) -> Click:
+     click = Click(**data.dict())
+     db.add(click)
+     db.commit()
+     db.refresh(click)
+     return click
+
+# получить список кликов
+def get_clicks(db: Session) -> list[Click]:
+    return db.query(Click).all()
+
+# получить один клик
+def get_click(db: Session, click_id: int) -> Click | None:
+    return db.query(Click).filter(Click.id == click_id).first()
 
 
 # обновить клик
-def update_click(click_id: int, click: ClickUpdate) -> ClickOut:
-    if click_id not in _clicks:
-        raise HTTPException(status_code=404, detail="Click не найден")
-    updated = _clicks[click_id].copy(update=click.dict(exclude_unset=True))
-    _clicks[click_id] = updated
-    return updated
+def update_click(db: Session, click_id: int, data: ClickUpdate) -> Click | None: 
+    click = get_click(db, click_id)
+    if not click:
+         return None 
+    for field, value in data.dict(exclude_unset=True).items():
+        setattr(click, field, value)
+    db.commit()
+    db.refresh(click)
+    return click
 
 # удалить клик
-def delete_click(click_id: int) -> dict:
-    if click_id not in _clicks:
-        raise HTTPException(status_code=404, detail="Click не найден")
-    deleted = _clicks.pop(click_id)
-    return {"message": f"Клик {click_id} удален", "click": deleted}
-
-# получить очки (glasses)
-def get_click_glasses(user_id: int) -> ClickGlasses:
-    glasses = _glasses.get(user_id, 0)
-    return ClickGlasses(profile_id=user_id, glasses=glasses)
+def delete_click(db: Session, click_id: int) -> Click | None:
+    click = get_click(db, click_id)
+    if not click:
+        return None
+    db.delete(click)
+    db.commit()
+    return click
 
 # увеличить счётчик очков
-def increment_click(user_id: int, amount: int = 1) -> ClickGlasses:
-    current = _glasses.get(user_id, 0)
-    _glasses[user_id] = current + amount
-    return ClickGlasses(profile_id=user_id, glasses=_glasses[user_id])
+def increment_click(db: Session,  click_id: int) -> Click | None:
+    click = get_click(db, click_id)
+    if not click:
+        return None
+    click.count += 1 # увеличивает клик на 1
+    db.commit()
+    db.refresh(click)
+    return click
