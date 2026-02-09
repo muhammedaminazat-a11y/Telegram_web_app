@@ -1,6 +1,6 @@
 /* Topbar */
 .topbar{
-
+  position: sticky;
   backdrop-filter: blur(14px);
   background: rgba(11,16,32,.70);
   border-bottom: 1px solid var(--stroke);

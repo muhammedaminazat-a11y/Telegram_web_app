@@ -1,27 +1,13 @@
+const API_BASE = "const API_BASE = "http://localhost:8000";
+
 export function initChat() {
   const box = document.getElementById("chatBox");
   const form = document.getElementById("chatForm");
   const input = document.getElementById("chatInput");
-  const clearBtn = document.getElementById("chatClearBtn");
   const sendBtn = document.getElementById("chatSendBtn");
+  const clearBtn = document.getElementById("chatClearBtn");
 
-  if (!box || !form || !input) return;
-
-  const KEY = "chat_history_v1";
-
-  function loadHistory() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  }
-  function saveHistory(history) {
-    localStorage.setItem(KEY, JSON.stringify(history));
-  }
-
-  let history = loadHistory();
+  if (!box || !form || !input || !sendBtn) return;
 
   function addMessage(role, text) {
     const row = document.createElement("div");
@@ -34,46 +20,37 @@ export function initChat() {
     row.appendChild(bubble);
     box.appendChild(row);
     box.scrollTop = box.scrollHeight;
-  }
 
-  function renderAll() {
-    box.innerHTML = "";
-    for (const m of history) addMessage(m.role, m.content);
+    return bubble;
   }
 
   async function sendMessage(text) {
-    history.push({ role: "user", content: text });
-    saveHistory(history);
     addMessage("user", text);
 
-    const row = document.createElement("div");
-    row.className = "msg-row bot";
-    const bubble = document.createElement("div");
-    bubble.className = "bubble bot";
-    bubble.textContent = "Печатает…";
-    row.appendChild(bubble);
-    box.appendChild(row);
-    box.scrollTop = box.scrollHeight;
+    const botBubble = addMessage("assistant", "Печатает…");
 
     sendBtn.disabled = true;
     input.disabled = true;
 
     try {
-      const res = await fetch("/ai/chat", {
+      // ВАЖНО: endpoint и формат совпадает с backend: POST /api/ai {message} -> {reply}
+      const res = await fetch(`${API_BASE}/api/ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: history.slice(-12) }),
+        body: JSON.stringify({ message: text }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const reply = data.reply ?? "Нет ответа";
 
-      bubble.textContent = reply;
-      history.push({ role: "assistant", content: reply });
-      saveHistory(history);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status}: ${errText}`);
+      }
+
+      const data = await res.json();
+      const reply = data?.reply ?? "Нет ответа";
+      botBubble.textContent = reply;
     } catch (e) {
       console.error(e);
-      bubble.textContent = "Ошибка: сервер недоступен или /api/chat не настроен.";
+      botBubble.textContent = "Ошибка: сервер недоступен или не отвечает.";
     } finally {
       sendBtn.disabled = false;
       input.disabled = false;
@@ -82,9 +59,7 @@ export function initChat() {
   }
 
   clearBtn?.addEventListener("click", () => {
-    history = [];
-    saveHistory(history);
-    renderAll();
+    box.innerHTML = ""; // просто очищаем экран, без localStorage
   });
 
   form.addEventListener("submit", (e) => {
@@ -94,6 +69,4 @@ export function initChat() {
     input.value = "";
     sendMessage(text);
   });
-
-  renderAll();
 }

@@ -1,21 +1,37 @@
 import os
-from fastapi import HTTPException
-from openai import OpenAI
-from backend.schemas.ai import AIRequest, AIResponse
+import httpx
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+USE_MOCK = os.getenv("USE_MOCK_LLM", "1") == "1"
 
-def ask_ai(request: AIRequest) -> AIResponse:
-    prompt = request.prompt.strip()
-    if not prompt:
-        raise HTTPException(status_code=400, detail="Запрос не может быть пустым")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-    try:
-        resp = client.responses.create(
-            model="gpt-5.2-mini",
-            input=prompt,
+
+async def ask_ai(message: str) -> str:
+    if USE_MOCK or not OPENAI_API_KEY:
+        return f"Мок-ответ: {message}"
+
+    payload = {
+        "model": OPENAI_MODEL,
+        "messages": [
+            {"role": "system", "content": "Ты полезный ассистент."},
+            {"role": "user", "content": message},
+        ],
+        "temperature": 0.7,
+    }
+
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}"
+    }
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        r = await client.post(
+            f"{OPENAI_BASE_URL}/chat/completions",
+            json=payload,
+            headers=headers
         )
-        text = resp.output_text or ""
-        return AIResponse(answer=text if text else "Пустой ответ")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OpenAI error: {e}")
+        r.raise_for_status()
+        data = r.json()
+
+    return data["choices"][0]["message"]["content"].strip()

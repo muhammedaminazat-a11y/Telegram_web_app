@@ -32,3 +32,4 @@ def health_check():
 @app.get("/")
 def root():
     return {"message": "Добро пожаловать в API!"} # возвращает словарь dict() ({})
+
