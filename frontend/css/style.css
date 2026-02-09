@@ -1,9 +1,11 @@
 @import url("./base.css");
 @import url("./components.css");
 
-/* Страницы */
+/* pages */
 @import url("./pages/home.css");
 @import url("./pages/pomodoro.css");
 @import url("./pages/profile.css");
 @import url("./pages/click.css");
-@import url("./pages/chat-ai.css");
+@import url("./pages/ai.css");
+@import url("./pages/task.css");
+

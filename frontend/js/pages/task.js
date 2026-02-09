@@ -3,36 +3,39 @@ import { apiTasks } from "../api.js";
 export function initTask() {
   const list = document.getElementById("tasksList");
   const addBtn = document.getElementById("addTaskBtn");
-  const totalEl = document.getElementById("tasksTotal");
-  const doneEl = document.getElementById("tasksDone");
-  const leftEl = document.getElementById("tasksLeft");
-  const emptyEl = document.getElementById("tasksEmpty");
+  const filters = document.getElementById("taskFilters");
 
-  const total = tasks.length;
-  const done = tasks.filter(t => t.done).length;
-  const left = total - done;
+  if (!list || !addBtn || !filters) return;
 
-  if (totalEl) totalEl.textContent = total;
-  if (doneEl) doneEl.textContent = done;
-  if (leftEl) leftEl.textContent = left;
+  let allTasks = [];
+  let activeFilter = "all";
 
-  if (emptyEl) emptyEl.hidden = total !== 0;
-
-  if (!list || !addBtn) return;
-
-  function renderLoading() {
-    list.innerHTML = `<li class="task">Загрузка…</li>`;
+  function setActiveFilter(next) {
+    activeFilter = next;
+    filters.querySelectorAll(".filter").forEach((b) => {
+      b.classList.toggle("is-active", b.dataset.filter === next);
+    });
+    render();
   }
 
-  function renderError(msg) {
-    list.innerHTML = `<li class="task">${msg}</li>`;
+  function filterTasks(tasks) {
+    if (activeFilter === "done") return tasks.filter((t) => t.done);
+
+    if (activeFilter === "today") {
+      // если у задач нет даты — просто показываем НЕ выполненные как "на сегодня"
+      return tasks.filter((t) => !t.done);
+    }
+
+    return tasks; // all
   }
 
-  function render(tasks) {
+  function render() {
+    const tasks = filterTasks(allTasks);
+
     list.innerHTML = "";
 
     if (!tasks.length) {
-      list.innerHTML = `<li class="task muted">Задач пока нет</li>`;
+      list.innerHTML = `<li class="task muted">Пока пусто</li>`;
       return;
     }
 
@@ -51,27 +54,31 @@ export function initTask() {
           <div class="task__meta"></div>
         </div>
 
-        <button class="btn btn-ghost btn-sm" data-del>🗑</button>
+        <button class="btn btn-ghost btn-sm" data-del type="button">🗑</button>
       `;
 
-      li.querySelector(".task__title").textContent = t.title;
-      li.querySelector(".task__meta").textContent = t.description || "";
+      li.querySelector(".task__title").textContent = t.title ?? "Без названия";
+      li.querySelector(".task__meta").textContent = t.description ?? "";
 
+      // toggle done
       li.querySelector(".task__check").addEventListener("change", async (e) => {
         try {
           await apiTasks.update(t.id, { done: e.target.checked });
-          load();
-        } catch {
+          await load();
+        } catch (err) {
+          console.error(err);
           alert("Не удалось обновить задачу");
         }
       });
 
+      // delete
       li.querySelector("[data-del]").addEventListener("click", async () => {
         if (!confirm("Удалить задачу?")) return;
         try {
           await apiTasks.remove(t.id);
-          load();
-        } catch {
+          await load();
+        } catch (err) {
+          console.error(err);
           alert("Не удалось удалить задачу");
         }
       });
@@ -81,15 +88,17 @@ export function initTask() {
   }
 
   async function load() {
-    renderLoading();
+    list.innerHTML = `<li class="task">Загрузка…</li>`;
     try {
-      const tasks = await apiTasks.getAll();
-      render(tasks);
-    } catch {
-      renderError("API недоступен");
+      allTasks = await apiTasks.getAll();
+      render();
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = `<li class="task">API недоступен</li>`;
     }
   }
 
+  // add task
   addBtn.addEventListener("click", async () => {
     const title = prompt("Название задачи:");
     if (!title) return;
@@ -98,37 +107,20 @@ export function initTask() {
 
     try {
       await apiTasks.create({ title, description, done: false });
-      load();
-    } catch {
+      await load();
+    } catch (err) {
+      console.error(err);
       alert("Не удалось создать задачу");
     }
   });
 
+  // filters click
+  filters.addEventListener("click", (e) => {
+    const btn = e.target.closest(".filter");
+    if (!btn) return;
+    setActiveFilter(btn.dataset.filter);
+  });
+
+  setActiveFilter("all");
   load();
-}
-  
-const hint = document.getElementById("taskHint");
-
-function showHint(text) {
-  if (!hint) return;
-  hint.style.display = "block";
-  hint.textContent = text;
-}
-
-function hideHint() {
-  if (!hint) return;
-  hint.style.display = "none";
-  hint.textContent = "";
-}
-async function load() {
-  renderLoading();
-  hideHint();
-  try {
-    const tasks = await apiTasks.getAll();
-    render(tasks);
-  } catch (e) {
-    console.error(e);
-    showHint("Сервер недоступен. Работаем в режиме демо.");
-    renderError("API недоступен");
-  }
 }

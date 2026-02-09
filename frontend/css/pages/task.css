@@ -1,63 +1,103 @@
-.task-page{
-  display:flex;
-  flex-direction: column;
-  gap: 12px;
+/* ===== Tasks page ===== */
+/* ===== Task filters ===== */
+
+.filters{
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
 }
 
-.task-card{ padding: 14px; }
-
-.task-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.task-sub{ margin-top: 4px; font-size: 12px; }
-
-.task-filters{ margin-bottom: 10px; }
-
-.task-stats{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 10px 0 12px;
-}
-
-.stat-pill{
-  border-radius: 16px;
+/* кнопка-фильтр */
+.filter{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 14px;
   border: 1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
-  padding: 10px;
-}
-.stat-pill__label{ font-size: 11px; }
-.stat-pill__value{
-  margin-top: 6px;
-  font-size: 18px;
-  font-weight: 950;
-}
-
-/* переиспользуем общий .task но добавим кнопки */
-.task{
-  position: relative;
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 13px;
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .12s ease;
 }
 
-.task .btn{
-  padding: 8px 10px;
-  border-radius: 12px;
+/* hover */
+.filter:hover{
+  background: rgba(124,92,255,.12);
 }
 
-.task-empty{
-  margin-top: 12px;
-  padding: 14px;
-  border-radius: var(--radius2);
-  border: 1px dashed rgba(255,255,255,.18);
-  background: rgba(255,255,255,.03);
-  text-align:center;
+/* active tab */
+.filter.is-active{
+  background: rgba(170, 149, 255, 0.22);
+  border-color: rgba(177, 158, 255, 0.45);
+  box-shadow:
+    0 8px 24px rgba(124,92,255,.35),
+    inset 0 0 0 1px rgba(255,255,255,.15);
 }
-.task-empty__title{
-  font-weight: 950;
-  margin-bottom: 6px;
+
+/* click */
+.filter:active{
+  transform: scale(.97);
 }
-.task-empty__text{ font-size: 12px; }
+
+
+
+.filters{
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+/* tabs buttons */
+.filter{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  transition: .2s ease;
+}
+
+/* hover */
+.filter:hover{
+  background: rgba(124,92,255,.12);
+}
+
+/* active tab */
+.filter.is-active{
+  background: rgba(124,92,255,.22);
+  border-color: rgba(124,92,255,.35);
+  box-shadow: 0 6px 20px rgba(124,92,255,.25);
+}
+
+/* section head already exists, но чуть усилим */
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* task list placeholder */
+.task-list{
+  margin-top: 10px;
+}
+
+.task.muted{
+  justify-content: center;
+  text-align: center;
+  opacity: .7;
+  font-size: 13px;
+}
+
+/* add button small glow */
+#addTaskBtn{
+  box-shadow: 0 8px 24px rgba(124,92,255,.35);
+}
