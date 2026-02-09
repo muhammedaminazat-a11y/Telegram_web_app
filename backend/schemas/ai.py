@@ -8,3 +8,7 @@ class AIRequest(BaseModel):
 # --- Ответ для AI ---
 class AIResponse(BaseModel):
     answer: str = Field(..., description="Ответ от AI")
+        
+class AIHistory(BaseModel):
+    user: str
+    AI: str
