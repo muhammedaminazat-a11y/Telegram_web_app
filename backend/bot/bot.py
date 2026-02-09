@@ -34,7 +34,7 @@ def main_kb() -> ReplyKeyboardMarkup:
                 KeyboardButton(text="🌐 Открыть WebApp", web_app=WebAppInfo(url=URL)),
             ],
             [
-                KeyboardButton(text="ℹ️ О приложении"),
+                KeyboardButton(text="ℹ О приложении"),
             ],
         ],
         resize_keyboard=True
@@ -65,17 +65,36 @@ async def profile(message: Message):
         f"• Имя: {full_name or '—'}\n"
         f"• Username: {username}\n"
         f"• ID: `{u.id}`\n"
-        f"• Язык: `{lang}`\n"
     )
     await message.answer(text, parse_mode="Markdown")
 
 
-@router.message(F.text == "ℹ️ О приложении")
+@router.message(F.text == "ℹ О приложении")
 async def about(message: Message):
     text = (
-        "ℹ️ *О приложении*\n\n"
-        "Это Telegram Mini App для задач/помодоро/игр и AI-чата.\n"
-        "Открывается внутри Telegram через кнопку *🌐 Открыть WebApp*.\n"
+        "ℹ *О приложении*\n\n"
+        "*Telegram Mini App*, который объединяет продуктивность и развлечения "
+        "в одном интерфейсе — прямо внутри Telegram.\n\n"
+
+        "*Возможности:*\n"
+        "•  Задачи (To-Do)\n"
+        "•  Pomodoro-таймер\n"
+        "•  AI-чат \n"
+        "•  Мини-игры: Snake, Click, Reaction\n"
+        "•  WebApp внутри Telegram\n\n"
+
+        "*Технологии:*\n"
+        "• Frontend: SPA (HTML / CSS / JavaScript)\n"
+        "• Backend: FastAPI\n"
+        "• Bot: aiogram\n"
+        "• Без базы данных\n\n"
+
+        "*Зачем это приложение:*\n"
+        "• Быстро фиксировать задачи\n"
+        "• Работать в фокусе\n"
+        "• Отдыхать без выхода из Telegram\n\n"
+
+        "_Проект находится в активной разработке._"
     )
     await message.answer(text, parse_mode="Markdown")
 
@@ -83,7 +102,7 @@ async def about(message: Message):
 @router.message()
 async def fallback(message: Message):
     await message.answer(
-        "Я понимаю только кнопки ниже 🙂\nНажми */start* если клавиатура пропала.",
+        "Я понимаю только кнопки ниже \nНажми */start* если клавиатура пропала.",
         parse_mode="Markdown"
     )
 
