@@ -1,28 +1,21 @@
-from sqlalchemy.orm import Session
+import os
 from fastapi import HTTPException
-from backend.models.ai import AI
+from openai import OpenAI
 from backend.schemas.ai import AIRequest, AIResponse
 
-ai_history: list[dict] = []
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Работа с ИИ API
-# Входные данные (Запрос к API)
-def ask_ai(db: Session, request: AIRequest) -> AIResponse: #-> return (вернуть)
-    if not request.prompt.strip():
+def ask_ai(request: AIRequest) -> AIResponse:
+    prompt = request.prompt.strip()
+    if not prompt:
         raise HTTPException(status_code=400, detail="Запрос не может быть пустым")
-    
-    reply = f"AI ответил: {request.prompt[::-1]}"
-    
-    # Иммитация ответа
-    ai_entry = AI(prompt=request.prompt, answer=reply)
-    db.add(ai_entry)
-    db.commit()
-    db.refresh(ai_entry)
-    
 
-
-    return AIResponse(answer=reply)
-
-# Ответ для AI 
-def get_history(db: Session) -> list[AI]:
-    return db.query(AI).all()
+    try:
+        resp = client.responses.create(
+            model="gpt-5.2-mini",
+            input=prompt,
+        )
+        text = resp.output_text or ""
+        return AIResponse(answer=text if text else "Пустой ответ")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"OpenAI error: {e}")
