@@ -90,11 +90,22 @@
   font-weight: 950;
 }
 
-.reaction-history{
+
+
+.history-ms{
+  font-weight: 900;
+}
+
+.history-meta{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.reaction-top{
   margin-top: 12px;
 }
 
-.history-list{
+.top-list{
   margin: 0;
   padding-left: 18px;
   display:flex;
@@ -102,7 +113,7 @@
   gap: 8px;
 }
 
-.history-item{
+.top-item{
   display:flex;
   align-items:center;
   justify-content: space-between;
@@ -113,11 +124,16 @@
   background: rgba(255,255,255,.05);
 }
 
-.history-ms{
-  font-weight: 900;
+.top-item.is-best{
+  border-color: rgba(124,92,255,.35);
+  background: rgba(124,92,255,.14);
 }
 
-.history-meta{
+.top-ms{
+  font-weight: 950;
+}
+
+.top-meta{
   font-size: 12px;
   color: var(--muted);
 }

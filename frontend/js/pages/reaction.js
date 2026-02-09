@@ -4,12 +4,17 @@ export function initReaction() {
   const btn = document.getElementById("reactionBtn");
   const result = document.getElementById("reactionResult");
   const hint = document.getElementById("reactionHint");
+
   const bestMsEl = document.getElementById("bestMs");
-  const bestResetBtn = document.getElementById("bestResetBtn");
+  const avg5MsEl = document.getElementById("avg5Ms");
+  const triesCountEl = document.getElementById("triesCount");
+  const historyClearBtn = document.getElementById("historyClearBtn");
+  const topList = document.getElementById("topList");
 
   if (!box || !btn || !text) return;
 
-  const KEY_BEST = "reaction_best_ms_v1";
+  const KEY = "reaction_history_v1";
+  const LIMIT = 50; // можно хранить больше, топ-5 всё равно
 
   let timeout = null;
   let startTime = 0;
@@ -18,19 +23,82 @@ export function initReaction() {
   const tg = window.Telegram?.WebApp;
   const haptic = tg?.HapticFeedback;
 
-  function getBest() {
-    const v = Number(localStorage.getItem(KEY_BEST));
-    return Number.isFinite(v) && v > 0 ? v : null;
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
   }
 
-  function setBest(ms) {
-    localStorage.setItem(KEY_BEST, String(ms));
-    renderBest();
+  function saveHistory(arr) {
+    localStorage.setItem(KEY, JSON.stringify(arr));
   }
 
-  function renderBest() {
-    const best = getBest();
-    bestMsEl.textContent = best ? `${best} ms` : "—";
+  let history = loadHistory(); // [{ms, ts}...]
+
+  function bestMs() {
+    if (!history.length) return null;
+    return Math.min(...history.map(x => x.ms));
+  }
+
+  function avgLast5() {
+    const last = history.slice(0, 5);
+    if (!last.length) return null;
+    const sum = last.reduce((a, x) => a + x.ms, 0);
+    return Math.round(sum / last.length);
+  }
+
+  function fmtTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function renderStats() {
+    const best = bestMs();
+    const avg5 = avgLast5();
+
+    if (bestMsEl) bestMsEl.textContent = best != null ? `${best} ms` : "—";
+    if (avg5MsEl) avg5MsEl.textContent = avg5 != null ? `${avg5} ms` : "—";
+    if (triesCountEl) triesCountEl.textContent = String(history.length);
+  }
+
+  function renderTop5() {
+    if (!topList) return;
+
+    topList.innerHTML = "";
+
+    if (!history.length) {
+      topList.innerHTML = `<li class="muted">Пока нет результатов</li>`;
+      return;
+    }
+
+    const top = [...history]
+      .sort((a, b) => a.ms - b.ms || a.ts - b.ts)
+      .slice(0, 5);
+
+    for (let i = 0; i < top.length; i++) {
+      const item = top[i];
+      const li = document.createElement("li");
+      li.className = "top-item" + (i === 0 ? " is-best" : "");
+
+      li.innerHTML = `
+        <span class="top-meta">#${i + 1} • ${fmtTime(item.ts)}</span>
+        <span class="top-ms">${item.ms} ms</span>
+      `;
+
+      topList.appendChild(li);
+    }
+  }
+
+  function pushResult(ms) {
+    history.unshift({ ms, ts: Date.now() }); // новые сверху
+    history = history.slice(0, LIMIT);
+    saveHistory(history);
+    renderStats();
+    renderTop5();
   }
 
   function resetUI() {
@@ -41,24 +109,24 @@ export function initReaction() {
     box.className = "reaction-box";
     text.textContent = "Готов?";
     btn.textContent = "Старт";
-    hint.textContent = "Нажми «Старт» и жди зелёного";
+    if (hint) hint.textContent = "Нажми «Старт» и жди зелёного";
   }
 
   function startWaiting() {
     state = "waiting";
-    result.textContent = "";
+    if (result) result.textContent = "";
     btn.textContent = "Жди…";
-    hint.textContent = "Не нажимай раньше!";
+    if (hint) hint.textContent = "Не нажимай раньше!";
     box.classList.add("waiting");
     text.textContent = "ЖДИ";
 
-    const delay = 900 + Math.random() * 2600; // 0.9–3.5 сек
+    const delay = 900 + Math.random() * 2600;
     timeout = setTimeout(() => {
       state = "ready";
       box.classList.remove("waiting");
       box.classList.add("ready");
       text.textContent = "ЖМИ!";
-      hint.textContent = "Нажми как можно быстрее";
+      if (hint) hint.textContent = "Нажми как можно быстрее";
       startTime = performance.now();
       haptic?.impactOccurred?.("light");
     }, delay);
@@ -74,7 +142,7 @@ export function initReaction() {
     if (state === "waiting") {
       clearTimeout(timeout);
       timeout = null;
-      result.textContent = "❌ Слишком рано!";
+      if (result) result.textContent = "❌ Слишком рано!";
       haptic?.notificationOccurred?.("error");
       resetUI();
       return;
@@ -82,28 +150,31 @@ export function initReaction() {
 
     if (state === "ready") {
       const ms = Math.max(1, Math.round(performance.now() - startTime));
-      const best = getBest();
 
-      result.textContent = `⚡ ${ms} ms`;
+      const prevBest = bestMs();
+      pushResult(ms);
 
-      if (!best || ms < best) {
-        setBest(ms);
-        result.textContent += " • ✅ Новый рекорд!";
-        haptic?.notificationOccurred?.("success");
-      } else {
-        haptic?.impactOccurred?.("medium");
+      if (result) {
+        result.textContent = `⚡ ${ms} ms`;
+        if (prevBest == null || ms < prevBest) result.textContent += " • ✅ Новый рекорд!";
       }
+
+      if (prevBest == null || ms < prevBest) haptic?.notificationOccurred?.("success");
+      else haptic?.impactOccurred?.("medium");
 
       resetUI();
     }
   });
 
-  bestResetBtn?.addEventListener("click", () => {
-    localStorage.removeItem(KEY_BEST);
-    renderBest();
-    result.textContent = "Рекорд сброшен";
+  historyClearBtn?.addEventListener("click", () => {
+    history = [];
+    saveHistory(history);
+    renderStats();
+    renderTop5();
+    if (result) result.textContent = "История очищена";
   });
 
-  renderBest();
+  renderStats();
+  renderTop5();
   resetUI();
 }

@@ -29,6 +29,13 @@ body{
 /* helpers */
 .muted{ color: var(--muted); font-size: 13px; }
 
+.section-title-top{
+  padding-top: 20px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin: 0 0 10px;
+}
+
 .section-title{
   font-weight: 800;
   letter-spacing: .2px;
