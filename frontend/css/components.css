@@ -162,15 +162,16 @@
   background: transparent;
   color: rgba(255,255,255,.70);
   border-radius: 16px;
-  cursor:pointer;
   display:flex;
   flex-direction: column;
+  cursor: pointer;
   align-items:center;
   justify-content:center;
   gap: 4px;
   padding: 8px 2px;
+  font-size: 19px;
+  font-style: monospace;
 }
-
 .nav-btn:hover{
   background: rgba(124,92,255,.14);
   transition: .2s;

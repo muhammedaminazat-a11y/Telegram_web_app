@@ -1,6 +1,8 @@
 export function initSnake() {
   const canvas = document.getElementById("snakeCanvas");
   const scoreEl = document.getElementById("snakeScore");
+
+  const startBtn = document.getElementById("snakeStart");
   const restartBtn = document.getElementById("snakeRestart");
 
   const btnUp = document.getElementById("btnUp");
@@ -8,7 +10,7 @@ export function initSnake() {
   const btnLeft = document.getElementById("btnLeft");
   const btnRight = document.getElementById("btnRight");
 
-  if (!canvas || !scoreEl || !restartBtn) return;
+  if (!canvas || !scoreEl) return;
 
   const ctx = canvas.getContext("2d");
 
@@ -27,12 +29,12 @@ export function initSnake() {
   }
 
   function setDir(nx, ny) {
-    // запрет разворота на 180°
-    if (nx === -dir.x && ny === -dir.y) return;
+    if (!alive) return; // пока не нажали START — направления не меняем
+    if (nx === -dir.x && ny === -dir.y) return; // запрет разворота
     nextDir = { x: nx, y: ny };
   }
 
-  function draw(gameOver = false) {
+  function draw(overlayText = "") {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // сетка
@@ -53,38 +55,43 @@ export function initSnake() {
       ctx.fillRect(p.x * CELL + 2, p.y * CELL + 2, CELL - 4, CELL - 4);
     });
 
-    // game over слой
-    if (gameOver) {
+    if (overlayText) {
       ctx.fillStyle = "rgba(0,0,0,.55)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "#fff";
-      ctx.font = "700 28px system-ui";
+      ctx.font = "700 26px system-ui";
       ctx.textAlign = "center";
-      ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 10);
-      ctx.font = "16px system-ui";
-      ctx.fillText("Нажми Restart", canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText(overlayText, canvas.width / 2, canvas.height / 2);
+      ctx.font = "14px system-ui";
+      ctx.fillText("Нажми START", canvas.width / 2, canvas.height / 2 + 24);
     }
+  }
+
+  function stopTimer() {
+    clearInterval(timer);
+    timer = null;
   }
 
   function step() {
     if (!alive) return;
 
     dir = nextDir;
-
     const head = snake[0];
     const newHead = { x: head.x + dir.x, y: head.y + dir.y };
 
     // стены
     if (newHead.x < 0 || newHead.x >= GRID || newHead.y < 0 || newHead.y >= GRID) {
       alive = false;
-      draw(true);
+      stopTimer();
+      draw("Game Over");
       return;
     }
 
     // врезался в себя
     if (snake.some((s, i) => i !== 0 && same(s, newHead))) {
       alive = false;
-      draw(true);
+      stopTimer();
+      draw("Game Over");
       return;
     }
 
@@ -98,39 +105,46 @@ export function initSnake() {
       // ускорение каждые 5 очков
       if (score % 5 === 0 && tickMs > 60) {
         tickMs -= 10;
-        clearInterval(timer);
+        stopTimer();
         timer = setInterval(step, tickMs);
       }
     } else {
       snake.pop();
     }
 
-    draw(false);
+    draw("");
   }
 
-  function reset() {
+  function reset(start = false) {
     dir = { x: 1, y: 0 };
     nextDir = { x: 1, y: 0 };
     snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
     food = spawnFood();
     score = 0;
     tickMs = 120;
-    alive = true;
-
     scoreEl.textContent = "0";
 
-    clearInterval(timer);
-    timer = setInterval(step, tickMs);
-    draw(false);
+    alive = start;
+    stopTimer();
+
+    if (start) {
+      timer = setInterval(step, tickMs);
+      draw("");
+    } else {
+      draw("Ready");
+    }
   }
 
-  // Управление кнопками
+  // Кнопки управления (только когда alive=true, см. setDir)
   btnUp?.addEventListener("click", () => setDir(0, -1));
   btnDown?.addEventListener("click", () => setDir(0, 1));
   btnLeft?.addEventListener("click", () => setDir(-1, 0));
   btnRight?.addEventListener("click", () => setDir(1, 0));
 
-  restartBtn.addEventListener("click", reset);
+  // START / Restart
+  startBtn?.addEventListener("click", () => reset(true));
+  restartBtn?.addEventListener("click", () => reset(true));
 
-  reset();
+  // при открытии экрана: игра НЕ стартует
+  reset(false);
 }
