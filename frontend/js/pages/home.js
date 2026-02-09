@@ -6,7 +6,6 @@ export function initHome(setActive) {
   const userEl = document.getElementById("homeUsername");
   const idEl = document.getElementById("homeId");
   const avatarEl = document.getElementById("homeAvatar");
-
   const goProfileBtn = document.getElementById("goProfileFromHome");
 
   function setText(el, text) {
@@ -120,14 +119,16 @@ export function initHome(setActive) {
     }
   });
 
-  // ---- Games
-  document.getElementById("goClickGame")?.addEventListener("click", () => setActive("click"));
-  const goSnakeGame = document.getElementById("goSnakeGame");
-      goSnakeGame?.addEventListener("click", () => {
-      setActive("snake");
-      });
+// ---- Games
+  document.getElementById("goClickGame")
+      ?.addEventListener("click", () => setActive("click"));
 
-  document.getElementById("goReactionGame")?.addEventListener("click", () => setActive("reaction"));
+  document.getElementById("goSnakeGame")
+      ?.addEventListener("click", () => setActive("snake"));
+
+  document.getElementById("goReactionGame")
+      ?.addEventListener("click", () => setActive("reaction"));
+
 
 
   // стартовая загрузка
