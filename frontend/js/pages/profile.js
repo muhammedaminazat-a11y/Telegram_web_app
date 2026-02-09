@@ -79,7 +79,6 @@ export function initProfile() {
     }
   });
 
-  // ✅ dropdown “Настройки” (после того как HTML профиля уже вставлен)
   setupSettingsDropdown();
 
   // -----------------------------
