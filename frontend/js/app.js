@@ -1,6 +1,6 @@
 import { initHome } from "./pages/home.js";
 import { initPomodoro } from "./pages/pomodoro.js";
-import { initTasks } from "./pages/task.js";
+import { initTask } from "./pages/task.js";
 import { initClick } from "./pages/click.js";
 import { initChat } from "./pages/chat.js";
 import { initProfile } from "./pages/profile.js";
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (name === "home") initHome(setActive);
       if (name === "pomodoro") initPomodoro();
-      if (name === "task") initTasks();
+      if (name === "task") initTask();
       if (name === "click") initClick();
       if (name === "ai") initChat();
       if (name === "profile") initProfile();

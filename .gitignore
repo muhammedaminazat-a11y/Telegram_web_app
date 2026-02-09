@@ -2,7 +2,7 @@
 .env
 .env.* # env.py (alembic)
 venv/
-
+.venv
 # Миграция Alembic
 migrations/__pycache__/
 
