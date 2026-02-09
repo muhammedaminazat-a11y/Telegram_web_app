@@ -1,6 +1,4 @@
-// Если бек на другом порту — укажи явно:
-const API_BASE = "http://10.171.7.173:8000";
-// Если фронт и бек на одном домене — оставь ""
+const API_BASE = "http://192.168.1.104";
 
 async function request(path, options = {}) {
   const res = await fetch(API_BASE + path, {
@@ -13,7 +11,6 @@ async function request(path, options = {}) {
     throw new Error(`HTTP ${res.status}: ${text}`);
   }
 
-  // безопасно: не все ответы — JSON (особенно DELETE)
   const contentType = res.headers.get("content-type") || "";
   if (contentType.includes("application/json")) {
     return res.json();
