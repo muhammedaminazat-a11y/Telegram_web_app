@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.models.click import Click
-from backend.schemas.click import ClickCreate, ClickUpdate, ClickOut
+from backend.schemas.click import ClickCreate, ClickUpdate
 
 # создать клик
 def create_click(db: Session, data: ClickCreate) -> Click:
@@ -14,10 +14,8 @@ def create_click(db: Session, data: ClickCreate) -> Click:
 def get_clicks(db: Session) -> list[Click]:
     return db.query(Click).all()
 
-# получить один клик
 def get_click(db: Session, click_id: int) -> Click | None:
     return db.query(Click).filter(Click.id == click_id).first()
-
 
 # обновить клик
 def update_click(db: Session, click_id: int, data: ClickUpdate) -> Click | None: 
@@ -38,6 +36,13 @@ def delete_click(db: Session, click_id: int) -> Click | None:
     db.delete(click)
     db.commit()
     return click
+
+# получить один клик
+def get_click_glasses(db: Session, click_id: int) -> Click | None:
+    click = get_click(db, click_id)
+    if not click:
+        return None
+    return click.count
 
 # увеличить счётчик очков
 def increment_click(db: Session,  click_id: int) -> Click | None:
