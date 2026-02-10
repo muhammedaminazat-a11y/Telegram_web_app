@@ -1,0 +1,61 @@
+/* =========================
+   THEME TOKENS (Light/Dark)
+   ========================= */
+
+:root{
+  /* base */
+  --bg: #f5f6fa;
+  --text: #0b1020;
+  --muted: rgba(11,16,32,.65);
+
+  /* surfaces */
+  --card: #ffffff;
+  --stroke: rgba(11,16,32,.10);
+  --shadow: 0 10px 30px rgba(0,0,0,.08);
+
+  /* accent */
+  --accent: #7c3aed;
+
+  /* overlays (topbar/footer glass) */
+  --overlay: rgba(255,255,255,.72);
+
+  /* common translucent fills */
+  --surface-1: rgba(0,0,0,.04);
+  --surface-2: rgba(0,0,0,.06);
+
+  /* bottom-nav text */
+  --nav-text: rgba(11,16,32,.70);
+  --nav-text-active: rgba(11,16,32,.95);
+
+  /* checkbox */
+  --chk-border: rgba(11,16,32,.18);
+  --chk-bg: rgba(0,0,0,.04);
+
+  /* FAB */
+  --fab-bg: rgba(11,16,32,.10);
+}
+
+html.dark{
+  --bg: #0b1020;
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.60);
+
+  --card: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.10);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+
+  --accent: #8b5cf6;
+
+  --overlay: rgba(11,16,32,.70);
+
+  --surface-1: rgba(255,255,255,.06);
+  --surface-2: rgba(255,255,255,.10);
+
+  --nav-text: rgba(255,255,255,.70);
+  --nav-text-active: rgba(255,255,255,.95);
+
+  --chk-border: rgba(255,255,255,.25);
+  --chk-bg: rgba(255,255,255,.06);
+
+  --fab-bg: rgba(255,255,255,.15);
+}

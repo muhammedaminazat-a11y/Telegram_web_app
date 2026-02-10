@@ -51,7 +51,10 @@
   
   <script type="module" src="frontend/js/app.js"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>window.API_BASE = "http://localhost:8001";</script>
+  <script>
+  window.API_BASE = "http://localhost:8000";     // основной backend (tasks и т.д.)
+  window.AI_API_BASE = "http://localhost:8001";  // AI backend
+  </script>
 
 
 </body>

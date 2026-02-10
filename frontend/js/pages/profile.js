@@ -1,3 +1,5 @@
+import { toggleTheme } from "../theme.js";
+
 export function initProfile() {
   const nameEl = document.getElementById("tgName");
   const userEl = document.getElementById("tgUsername");
@@ -8,6 +10,9 @@ export function initProfile() {
   function setText(el, text) {
     if (el) el.textContent = text;
   }
+
+  // ✅ ТЕМА (работает и в браузере, и в Telegram)
+  setupThemeRow();
 
   // 1) Проверка окружения
   const tg = window.Telegram?.WebApp;
@@ -83,6 +88,30 @@ export function initProfile() {
 
   // -----------------------------
   // helpers
+
+  function setupThemeRow() {
+    const themeBtn = document.getElementById("themeBtn");
+    if (!themeBtn) return;
+
+    syncThemeIcon();
+
+    themeBtn.addEventListener("click", () => {
+      toggleTheme();
+      syncThemeIcon();
+    });
+  }
+
+  function syncThemeIcon() {
+    const themeBtn = document.getElementById("themeBtn");
+    if (!themeBtn) return;
+
+    const leftIcon = themeBtn.querySelector(".p-row__left");
+    if (!leftIcon) return;
+
+    const isDark = document.documentElement.classList.contains("dark");
+    leftIcon.textContent = isDark ? "🌙" : "☀️";
+  }
+
   function setupSettingsDropdown() {
     const toggle = document.getElementById("settingsToggle");
     const dropdown = document.getElementById("settingsDropdown");

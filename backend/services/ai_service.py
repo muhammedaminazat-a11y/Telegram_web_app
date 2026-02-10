@@ -3,34 +3,46 @@ import httpx
 
 USE_MOCK = os.getenv("USE_MOCK_LLM", "1") == "1"
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 
 async def ask_ai(message: str) -> str:
-    # Локальный режим (без ключа)
-    if USE_MOCK or not OPENAI_API_KEY:
+    # Мок-режим (без внешнего API)
+    if USE_MOCK:
         return f"🤖 Локальный AI ответил: {message}"
 
+    # Если ключ не задан — сообщаем нормально (без 500)
+    if not GROQ_API_KEY:
+        return "❌ GROQ_API_KEY не задан в .env"
+
     payload = {
-        "model": OPENAI_MODEL,
+        "model": GROQ_MODEL,
         "messages": [
-            {"role": "system", "content": "Ты полезный ассистент."},
+            {"role": "system", "content": "Ты полезный ассистент. Отвечай кратко и по делу."},
             {"role": "user", "content": message},
         ],
         "temperature": 0.7,
     }
 
-    headers = {"Authorization": f"Bearer {OPENAI_API_KEY}"}
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
     async with httpx.AsyncClient(timeout=60) as client:
         r = await client.post(
-            f"{OPENAI_BASE_URL}/chat/completions",
+            f"{GROQ_BASE_URL}/chat/completions",
             json=payload,
             headers=headers,
         )
-        r.raise_for_status()
+
+        # Чтобы ты видел причину, если что-то не так
+        if r.status_code != 200:
+            return f"❌ Groq error {r.status_code}: {r.text[:400]}"
+
         data = r.json()
 
-    return data["choices"][0]["message"]["content"].strip()
+    # OpenAI-compatible parsing
+    return (data["choices"][0]["message"]["content"] or "").strip()

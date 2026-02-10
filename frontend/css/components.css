@@ -1,8 +1,12 @@
-/* Topbar */
+/* =========================
+   TOPBAR
+   ========================= */
 .topbar{
   position: sticky;
+  top: 0;
+  z-index: 500;
   backdrop-filter: blur(14px);
-  background: rgba(11,16,32,.70);
+  background: var(--overlay);
   border-bottom: 1px solid var(--stroke);
   padding: 14px;
 }
@@ -15,13 +19,17 @@
 }
 .logo img{ display:block; }
 
-/* Content */
+/* =========================
+   CONTENT
+   ========================= */
 .content{
   flex: 1;
   padding: 14px 14px 96px; /* место под нижнюю навигацию */
 }
 
-/* Card */
+/* =========================
+   CARD
+   ========================= */
 .card{
   background: var(--card);
   border: 1px solid var(--stroke);
@@ -31,33 +39,46 @@
 }
 .card + .card{ margin-top: 12px; }
 
-/* Buttons */
+/* =========================
+   BUTTONS
+   ========================= */
 .btn{
   border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
+  background: var(--surface-1);
   color: var(--text);
   padding: 12px 14px;
   border-radius: 14px;
   cursor:pointer;
   font-weight: 800;
-  display: flex;
-   justify-content: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
-.btn-sm{  
-  display: flex;
-  justify-content: center; 
-  padding: 10px 12px; 
-  border-radius: 12px; 
-  font-size: 13px; 
+
+.btn-sm{
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
   margin-top: 20px;
 }
 
 .btn-primary{
   border-color: rgba(124,92,255,.45);
-  background: linear-gradient(135deg, rgba(124,92,255,.85), rgba(34,211,238,.40));
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    var(--accent2)
+  );
+  color: #fff;
 }
-.btn-ghost{  background: transparent;  }
 
+.btn-ghost{
+  background: transparent;
+}
+
+/* =========================
+   ROW / GRID
+   ========================= */
 .row{
   display:flex;
   gap: 10px;
@@ -65,7 +86,6 @@
 }
 .row .btn{ flex:1; }
 
-/* Layout helpers */
 .grid-2{
   margin-top: 12px;
   display:grid;
@@ -80,7 +100,9 @@
   gap: 10px;
 }
 
-/* Tasks list common */
+/* =========================
+   TASK LIST
+   ========================= */
 .task-list{
   list-style:none;
   margin: 0;
@@ -89,6 +111,7 @@
   flex-direction: column;
   gap: 10px;
 }
+
 .task{
   display:flex;
   align-items:center;
@@ -96,12 +119,20 @@
   padding: 12px;
   border-radius: var(--radius2);
   border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
+  background: var(--surface-1);
 }
+
 .task__body{ flex:1; min-width: 0; }
 .task__title{ font-weight: 800; }
-.task__meta{ color: var(--muted); font-size: 12px; margin-top: 3px; }
+.task__meta{
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
 
+/* =========================
+   PILLS
+   ========================= */
 .pill{
   font-size: 11px;
   font-weight: 700;
@@ -110,42 +141,59 @@
   background: rgba(124,92,255,.22);
   border: 1px solid rgba(124,92,255,.25);
 }
+
 .pill-soft{
   background: rgba(34,211,238,.14);
   border-color: rgba(34,211,238,.20);
 }
 
-.chk{ display:flex; align-items:center; }
+/* =========================
+   CHECKBOX
+   ========================= */
+.chk{
+  display:flex;
+  align-items:center;
+}
+
 .chk input{ display:none; }
+
 .chk__ui{
-  width: 22px; height:22px;
+  width: 22px;
+  height:22px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.25);
-  background: rgba(255,255,255,.06);
+  border: 1px solid var(--chk-border);
+  background: var(--chk-bg);
   position: relative;
 }
+
 .chk input:checked + .chk__ui{
   background: rgba(124,92,255,.38);
   border-color: rgba(124,92,255,.55);
 }
+
 .chk input:checked + .chk__ui::after{
   content:"";
   position:absolute;
-  left: 6px; top: 3px;
-  width: 6px; height: 11px;
+  left: 6px;
+  top: 3px;
+  width: 6px;
+  height: 11px;
   border: 2px solid rgba(255,255,255,.95);
-  border-top:0; border-left:0;
+  border-top:0;
+  border-left:0;
   transform: rotate(45deg);
 }
 
-/* Footer nav */
+/* =========================
+   FOOTER / BOTTOM NAV
+   ========================= */
 .footer{
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   backdrop-filter: blur(14px);
-  background: rgba(11,16,32,.70);
+  background: var(--overlay);
   border-top: 1px solid var(--stroke);
   z-index: 600;
 }
@@ -160,7 +208,7 @@
 .nav-btn{
   border: 0;
   background: transparent;
-  color: rgba(255,255,255,.70);
+  color: var(--nav-text);
   border-radius: 16px;
   display:flex;
   flex-direction: column;
@@ -172,14 +220,14 @@
   font-size: 19px;
   font-style: monospace;
 }
+
 .nav-btn:hover{
   background: rgba(124,92,255,.14);
-  transition: .2s;
 }
 
 .nav-btn.is-active{
   background: rgba(124,92,255,.20);
-  color: rgba(255,255,255,.95);
+  color: var(--nav-text-active);
   border: 1px solid rgba(124,92,255,.25);
 }
 
@@ -196,16 +244,34 @@
   display:block;
 }
 
-/* FAB center button */
+/* =========================
+   FAB (CENTER BUTTON)
+   ========================= */
 .nav-btn--fab .nav-ico--fab{
   width: 65px;
   height: 65px;
   border-radius: 50%;
-  background-color: #ababab;
+  background-color: var(--fab-bg);
 }
 
-.nav-btn--fab:hover {
+.nav-btn--fab:hover{
   background: rgba(124,92,255,.30);
   border-radius: 50%;
   transform: translateY(-2px);
+}
+
+/* =========================
+   SMOOTH THEME TRANSITION
+   ========================= */
+body,
+.card,
+.topbar,
+.footer,
+.task,
+.btn,
+.nav-btn{
+  transition:
+    background .25s,
+    color .25s,
+    border-color .25s;
 }

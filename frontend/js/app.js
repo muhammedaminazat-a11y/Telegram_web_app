@@ -6,9 +6,11 @@ import { initChat } from "./pages/chat.js";
 import { initProfile } from "./pages/profile.js";
 import { initReaction } from "./pages/reaction.js";
 import { initSnake } from "./pages/snake.js";
-
+import { initTheme } from "./theme.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+
   const content = document.getElementById("app-content");
   const buttons = document.querySelectorAll(".nav-btn");
 
@@ -48,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (name === "profile") initProfile();
       if (name === "reaction") initReaction();
       if (name === "snake") initSnake();
-
 
     } catch (e) {
       console.error(e);

@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = window.AI_API_BASE || "http://localhost:8001";
 
 export function initChat() {
   const box = document.getElementById("chatBox");
@@ -26,14 +26,12 @@ export function initChat() {
 
   async function sendMessage(text) {
     addMessage("user", text);
-
     const botBubble = addMessage("assistant", "Печатает…");
 
     sendBtn.disabled = true;
     input.disabled = true;
 
     try {
-      // ВАЖНО: endpoint и формат совпадает с backend: POST /api/ai {message} -> {reply}
       const res = await fetch(`${API_BASE}/api/ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,8 +44,7 @@ export function initChat() {
       }
 
       const data = await res.json();
-      const reply = data?.reply ?? "Нет ответа";
-      botBubble.textContent = reply;
+      botBubble.textContent = data?.reply ?? "Нет ответа";
     } catch (e) {
       console.error(e);
       botBubble.textContent = "Ошибка: сервер недоступен или не отвечает.";
@@ -59,7 +56,16 @@ export function initChat() {
   }
 
   clearBtn?.addEventListener("click", () => {
-    box.innerHTML = ""; // просто очищаем экран, без localStorage
+    box.innerHTML = "";
+    input.focus();
+  });
+
+  // Enter отправляет (Shift+Enter не используем, потому что input, не textarea)
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      form.requestSubmit();
+    }
   });
 
   form.addEventListener("submit", (e) => {
@@ -68,5 +74,13 @@ export function initChat() {
     if (!text) return;
     input.value = "";
     sendMessage(text);
+  });
+
+  // быстрые кнопки
+  document.querySelectorAll(".quick-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const t = btn.dataset.text || btn.textContent;
+      if (t) sendMessage(t);
+    });
   });
 }

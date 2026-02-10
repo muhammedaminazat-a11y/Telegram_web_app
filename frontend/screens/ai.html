@@ -1,28 +1,20 @@
-<section class="chat">
-  <div class="card chat-card">
-    <div class="chat-top">
-      <div>
-        <div class="section-title" style="margin:0">Chat  AI</div>
-      </div>
+<section class="ai-page">
+  <div class="ai-top">
+    <div class="ai-title">Chat AI</div>
+    <button class="btn btn-ghost" id="chatClearBtn" type="button">Очистить</button>
+  </div>
 
-      <div class="chat-top__actions">
-        <button class="btn btn-ghost btn-sm" id="chatClearBtn" type="button">Очистить</button>
-      </div>
-    </div>
+  <div id="chatBox" class="chat-box"></div>
 
-    <div class="chat-box" id="chatBox" aria-label="Сообщения"></div>
+  <form id="chatForm" class="chat-form">
+    <input id="chatInput" class="chat-input" type="text" placeholder="Напиши сообщение..." />
+    <button id="chatSendBtn" class="chat-send" type="submit">➤</button>
+  </form>
 
-    <form class="chat-form" id="chatForm">
-      <textarea
-        class="chat-input"
-        id="chatInput"
-        rows="1"
-        placeholder="Напиши сообщение…"
-      ></textarea>
-
-      <button class="btn btn-primary chat-send" id="chatSendBtn" type="submit" aria-label="Отправить">
-        ➤
-      </button>
-    </form>
+  <!-- быстрые кнопки (опционально) -->
+  <div class="chat-quick">
+    <button class="quick-btn" type="button" data-text="Привет">Привет</button>
+    <button class="quick-btn" type="button" data-text="Как дела?">Как дела</button>
+    <button class="quick-btn" type="button" data-text="Помоги составить план на день">План</button>
   </div>
 </section>
