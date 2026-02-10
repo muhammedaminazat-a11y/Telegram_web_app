@@ -212,3 +212,75 @@ es/profile.css */
 .settings-item:hover{
   background: rgba(124,92,255,.15);
 }
+
+
+/* ===== About Modal ===== */
+.modal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 1000;
+}
+
+.modal.is-open{
+  display: block;
+}
+
+.modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal__card{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 24px));
+  background-color: rgb(7, 10, 35);
+  border-radius: 20px;
+}
+
+.modal__head{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.modal__title{
+  font-weight: 900;
+}
+.modal__close_left{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke) ;
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.modal__close{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.modal__body{
+  padding: 14px;
+}
+
+.about-row{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-1);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}

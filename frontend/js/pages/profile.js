@@ -11,7 +11,10 @@ export function initProfile() {
     if (el) el.textContent = text;
   }
 
+  // ✅ UI-инициализации ДО любых return
   setupThemeRow();
+  setupAbout();              // ✅ важно: ДО tg/return
+  setupSettingsDropdown();   // можно тоже заранее
 
   // ====== 1) Telegram окружение? ======
   const tg = window.Telegram?.WebApp;
@@ -33,9 +36,6 @@ export function initProfile() {
 
     currentId = local.id;
     bindCopy(copyBtn, () => currentId);
-
-    // если нужно — оставь dropdown
-    setupSettingsDropdown();
     return;
   }
 
@@ -54,8 +54,6 @@ export function initProfile() {
       "Если это Telegram — возможно данные не передались. Проверь запуск Mini App."
     );
     if (copyBtn) copyBtn.disabled = true;
-
-    setupSettingsDropdown();
     return;
   }
 
@@ -74,10 +72,8 @@ export function initProfile() {
   currentId = id;
   bindCopy(copyBtn, () => currentId);
 
-  setupSettingsDropdown();
-
   // -----------------------------
-  // helpers
+  // helpers (inside initProfile)
 
   function setupThemeRow() {
     const themeBtn = document.getElementById("themeBtn");
@@ -117,7 +113,7 @@ export function initProfile() {
 }
 
 /* =========================
-   Helper functions (outside export ok)
+   OUTSIDE HELPERS
    ========================= */
 
 function getOrCreateLocalUser() {
@@ -127,7 +123,6 @@ function getOrCreateLocalUser() {
     try { return JSON.parse(saved); } catch {}
   }
 
-  // стабильный локальный id (не Telegram)
   const id = "local-" + cryptoRandomId(10);
 
   const user = {
@@ -141,7 +136,6 @@ function getOrCreateLocalUser() {
 }
 
 function cryptoRandomId(len = 10) {
-  // работает в современных браузерах
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
   const arr = new Uint8Array(len);
   crypto.getRandomValues(arr);
@@ -173,4 +167,54 @@ function bindCopy(btn, getText) {
       setTimeout(() => (btn.textContent = "📋 Скопировать ID"), 1200);
     }
   });
+}
+
+/* =========================
+   ABOUT MODAL
+   Требует HTML:
+   - button#aboutBtn
+   - div#aboutModal
+   - .modal__backdrop внутри aboutModal
+   - button#aboutClose
+   - (опционально) span#aboutEnv
+   ========================= */
+
+function setupAbout() {
+  const btn = document.getElementById("aboutBtn");
+  const modal = document.getElementById("aboutModal");
+  const closeBtn = document.getElementById("aboutClose");
+  const envEl = document.getElementById("aboutEnv");
+
+  if (!btn || !modal) return;
+
+  if (envEl) {
+    envEl.textContent = window.Telegram?.WebApp ? "Telegram Mini App" : "Browser";
+  }
+
+  const backdrop = modal.querySelector(".modal__backdrop");
+
+  function openModal() {
+    modal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+
+  btn.addEventListener("click", openModal);
+  closeBtn?.addEventListener("click", closeModal);
+  backdrop?.addEventListener("click", closeModal);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+
+  document.getElementById("gitbutton")?.addEventListener("click", () => {
+  window.open("https://github.com/muhammedaminazat-a11y/Telegram_web_app", "_blank");
+ });
+
 }

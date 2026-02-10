@@ -1,4 +1,6 @@
 const API_BASE = window.API_BASE || "http://localhost:8000";
+export const TASKS_BASE = "http://127.0.0.1:8000/api";
+
 
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {

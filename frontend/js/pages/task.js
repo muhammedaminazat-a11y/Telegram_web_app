@@ -1,126 +1,142 @@
-import { apiTasks } from "../api.js";
+// frontend/js/pages/task.js
+import { TasksAPI } from "../api/tasks.js";
 
 export function initTask() {
-  const list = document.getElementById("tasksList");
-  const addBtn = document.getElementById("addTaskBtn");
-  const filters = document.getElementById("taskFilters");
+  // === поменяй здесь, если у тебя другие id ===
+  const listEl = document.getElementById("taskList");
+  const inputEl = document.getElementById("taskTitle");
+  const addBtn = document.getElementById("taskAddBtn");
 
-  if (!list || !addBtn || !filters) return;
-
-  let allTasks = [];
-  let activeFilter = "all";
-
-  function setActiveFilter(next) {
-    activeFilter = next;
-    filters.querySelectorAll(".filter").forEach((b) => {
-      b.classList.toggle("is-active", b.dataset.filter === next);
-    });
-    render();
+  if (!listEl) {
+    console.warn("taskList не найден в task.html");
+    return;
   }
 
-  function filterTasks(tasks) {
-    if (activeFilter === "done") return tasks.filter((t) => t.done);
-
-    if (activeFilter === "today") {
-      // если у задач нет даты — просто показываем НЕ выполненные как "на сегодня"
-      return tasks.filter((t) => !t.done);
+  // Чтобы не падало, если input/button нет — всё равно покажем список
+  async function refresh() {
+    try {
+      const tasks = await TasksAPI.list();
+      render(tasks);
+    } catch (e) {
+      console.error(e);
+      listEl.innerHTML = `
+        <li class="task">
+          <div class="task__body">
+            <div class="task__title">Ошибка загрузки задач</div>
+            <div class="task__meta">${escapeHtml(String(e.message || e))}</div>
+          </div>
+        </li>
+      `;
     }
-
-    return tasks; // all
   }
 
-  function render() {
-    const tasks = filterTasks(allTasks);
+  function render(tasks) {
+    if (!Array.isArray(tasks)) tasks = [];
 
-    list.innerHTML = "";
-
-    if (!tasks.length) {
-      list.innerHTML = `<li class="task muted">Пока пусто</li>`;
-      return;
-    }
-
-    for (const t of tasks) {
-      const li = document.createElement("li");
-      li.className = "task";
-
-      li.innerHTML = `
+    listEl.innerHTML = tasks
+      .map(
+        (t) => `
+      <li class="task" data-id="${t.id}">
         <label class="chk">
-          <input type="checkbox" class="task__check" ${t.done ? "checked" : ""}/>
+          <input type="checkbox" ${t.done ? "checked" : ""} />
           <span class="chk__ui"></span>
         </label>
 
         <div class="task__body">
-          <div class="task__title"></div>
-          <div class="task__meta"></div>
+          <div class="task__title">${escapeHtml(t.title)}</div>
+          <div class="task__meta">${formatDate(t.created_at)}</div>
         </div>
 
-        <button class="btn btn-ghost btn-sm" data-del type="button">🗑</button>
-      `;
+        <span class="pill ${t.done ? "pill-soft" : ""}">
+          ${t.done ? "done" : "todo"}
+        </span>
 
-      li.querySelector(".task__title").textContent = t.title ?? "Без названия";
-      li.querySelector(".task__meta").textContent = t.description ?? "";
-
-      // toggle done
-      li.querySelector(".task__check").addEventListener("change", async (e) => {
-        try {
-          await apiTasks.update(t.id, { done: e.target.checked });
-          await load();
-        } catch (err) {
-          console.error(err);
-          alert("Не удалось обновить задачу");
-        }
-      });
-
-      // delete
-      li.querySelector("[data-del]").addEventListener("click", async () => {
-        if (!confirm("Удалить задачу?")) return;
-        try {
-          await apiTasks.remove(t.id);
-          await load();
-        } catch (err) {
-          console.error(err);
-          alert("Не удалось удалить задачу");
-        }
-      });
-
-      list.appendChild(li);
-    }
+        <button class="btn btn-ghost" type="button" data-del="1">🗑</button>
+      </li>
+    `
+      )
+      .join("");
   }
 
-  async function load() {
-    list.innerHTML = `<li class="task">Загрузка…</li>`;
-    try {
-      allTasks = await apiTasks.getAll();
-      render();
-    } catch (err) {
-      console.error(err);
-      list.innerHTML = `<li class="task">API недоступен</li>`;
-    }
-  }
-
-  // add task
-  addBtn.addEventListener("click", async () => {
-    const title = prompt("Название задачи:");
+  // Добавление
+  addBtn?.addEventListener("click", async () => {
+    const title = (inputEl?.value || "").trim();
     if (!title) return;
 
-    const description = prompt("Описание (необязательно):") || "";
-
+    addBtn.disabled = true;
     try {
-      await apiTasks.create({ title, description, done: false });
-      await load();
-    } catch (err) {
-      console.error(err);
-      alert("Не удалось создать задачу");
+      await TasksAPI.create(title);
+      if (inputEl) inputEl.value = "";
+      await refresh();
+    } catch (e) {
+      console.error(e);
+      alert(`Не удалось создать задачу: ${e.message || e}`);
+    } finally {
+      addBtn.disabled = false;
     }
   });
 
-  // filters click
-  filters.addEventListener("click", (e) => {
-    const btn = e.target.closest(".filter");
-    if (!btn) return;
-    setActiveFilter(btn.dataset.filter);
+  // Enter в инпуте
+  inputEl?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") addBtn?.click();
   });
 
-  setActiveFilter("all");
-  load();
+  // Удаление (делегирование)
+  listEl.addEventListener("click", async (e) => {
+    const li = e.target.closest(".task");
+    if (!li) return;
+
+    const id = Number(li.dataset.id);
+    if (!Number.isFinite(id)) return;
+
+    if (e.target.closest("[data-del]")) {
+      try {
+        await TasksAPI.remove(id);
+        await refresh();
+      } catch (err) {
+        console.error(err);
+        alert(`Не удалось удалить: ${err.message || err}`);
+      }
+    }
+  });
+
+  // done toggle
+  listEl.addEventListener("change", async (e) => {
+    const li = e.target.closest(".task");
+    if (!li) return;
+
+    const id = Number(li.dataset.id);
+    if (!Number.isFinite(id)) return;
+
+    if (e.target.matches('input[type="checkbox"]')) {
+      const done = e.target.checked;
+
+      try {
+        await TasksAPI.patch(id, { done });
+        await refresh();
+      } catch (err) {
+        console.error(err);
+        alert(`Не удалось обновить: ${err.message || err}`);
+      }
+    }
+  });
+
+  // старт
+  refresh();
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function formatDate(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return String(iso);
+  }
 }
