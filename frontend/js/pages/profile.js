@@ -11,31 +11,38 @@ export function initProfile() {
     if (el) el.textContent = text;
   }
 
-  // ✅ ТЕМА (работает и в браузере, и в Telegram)
   setupThemeRow();
 
-  // 1) Проверка окружения
+  // ====== 1) Telegram окружение? ======
   const tg = window.Telegram?.WebApp;
+
+  // будем использовать один id для копирования
+  let currentId = "—";
+
+  // ====== 2) Если НЕ Telegram — делаем локального пользователя ======
   if (!tg) {
-    setText(nameEl, "Не в Telegram");
-    setText(userEl, "Открой через Telegram Mini App");
-    setText(idEl, "—");
+    const local = getOrCreateLocalUser();
+
+    setText(nameEl, local.name);
+    setText(userEl, local.username);
+    setText(idEl, local.id);
     setText(
       hintEl,
-      "Подсказка: профиль заполняется только внутри Telegram (WebApp SDK недоступен в обычном браузере)."
+      "Браузерный режим: Telegram ID недоступен. Используется локальный ID проекта."
     );
-    if (copyBtn) copyBtn.disabled = true;
 
-    // всё равно включаем dropdown (работает и в браузере)
+    currentId = local.id;
+    bindCopy(copyBtn, () => currentId);
+
+    // если нужно — оставь dropdown
     setupSettingsDropdown();
     return;
   }
 
-  // 2) Сообщаем Telegram что всё готово
+  // ====== 3) Telegram режим ======
   tg.ready();
   tg.expand?.();
 
-  // 3) Берём пользователя из initDataUnsafe
   const user = tg.initDataUnsafe?.user;
 
   if (!user) {
@@ -44,7 +51,7 @@ export function initProfile() {
     setText(idEl, "—");
     setText(
       hintEl,
-      "Если это в Telegram — возможно Mini App запущено без user (редко) или данные не передались."
+      "Если это Telegram — возможно данные не передались. Проверь запуск Mini App."
     );
     if (copyBtn) copyBtn.disabled = true;
 
@@ -60,29 +67,12 @@ export function initProfile() {
   setText(userEl, username);
   setText(idEl, id);
 
-  // 4) Инфо-подсказка
   const platform = tg.platform || "unknown";
   const version = tg.version || "";
   setText(hintEl, `Telegram WebApp: ${platform} ${version}`.trim());
 
-  // 5) Копирование ID
-  copyBtn?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(id);
-      copyBtn.textContent = "✅ ID скопирован";
-      setTimeout(() => (copyBtn.textContent = "📋 Скопировать ID"), 1200);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = id;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-
-      copyBtn.textContent = "✅ ID скопирован";
-      setTimeout(() => (copyBtn.textContent = "📋 Скопировать ID"), 1200);
-    }
-  });
+  currentId = id;
+  bindCopy(copyBtn, () => currentId);
 
   setupSettingsDropdown();
 
@@ -124,4 +114,63 @@ export function initProfile() {
       if (arrow) arrow.textContent = opened ? "⌃" : "⌄";
     });
   }
+}
+
+/* =========================
+   Helper functions (outside export ok)
+   ========================= */
+
+function getOrCreateLocalUser() {
+  const KEY = "local_user_v1";
+  const saved = localStorage.getItem(KEY);
+  if (saved) {
+    try { return JSON.parse(saved); } catch {}
+  }
+
+  // стабильный локальный id (не Telegram)
+  const id = "local-" + cryptoRandomId(10);
+
+  const user = {
+    id,
+    name: "Пользователь",
+    username: "@local"
+  };
+
+  localStorage.setItem(KEY, JSON.stringify(user));
+  return user;
+}
+
+function cryptoRandomId(len = 10) {
+  // работает в современных браузерах
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, n => chars[n % chars.length]).join("");
+}
+
+function bindCopy(btn, getText) {
+  if (!btn) return;
+
+  btn.disabled = false;
+
+  btn.addEventListener("click", async () => {
+    const text = String(getText() ?? "");
+    if (!text || text === "—") return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = "✅ ID скопирован";
+      setTimeout(() => (btn.textContent = "📋 Скопировать ID"), 1200);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+
+      btn.textContent = "✅ ID скопирован";
+      setTimeout(() => (btn.textContent = "📋 Скопировать ID"), 1200);
+    }
+  });
 }
