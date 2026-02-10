@@ -18,4 +18,8 @@ app.include_router(ai_router)
 
 @app.get("/health")
 def health():
+<<<<<<< HEAD
     return {"status": "ai-ok"}
+=======
+    return {"status": "ok"}
+>>>>>>> b2ef11e (Мои локальные изменения)

@@ -38,11 +38,12 @@ def update(pomodoro_id: int, data: PomodoroUpdate) -> PomodoroOut:
     pomodoros[pomodoro_id] = updated
     return updated
 
-def delete(pomodoro_id: int) -> bool:
+def delete(pomodoro_id: int) -> PomodoroOut | None:
     if pomodoro_id in pomodoros:
+        deleted = pomodoros[pomodoro_id]
         del pomodoros[pomodoro_id]
-        return True
-    return False
+        return deleted
+    return None
 
 def progress(pomodoro_id: int) -> PomodoroProgress:
     if pomodoro_id not in pomodoros:

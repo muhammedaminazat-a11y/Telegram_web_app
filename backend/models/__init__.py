@@ -9,6 +9,7 @@ from backend.models.task import Task
 __all__ = ["Base",
             "AI",
             "Click",
+            "ClickGlasses",
             "Home",
             "Pomodoro",
             "Profile",
