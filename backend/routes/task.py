@@ -21,7 +21,7 @@ def get_db():
         db.close()
 
 # эндпоинт получения списка задач
-@router.get("/", response_model=list[TaskOut])
+@router.get("", response_model=list[TaskOut])
 def get_tasks(db: Session = Depends(get_db)):
     return task_service.get_tasks(db)
 
@@ -31,7 +31,7 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
     return task_service.get_task(db, task_id)
 
 # эндпоинт создание задачи
-@router.post("/", response_model=TaskOut)
+@router.post("", response_model=TaskOut)
 def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     return task_service.create_task(db, task)
 

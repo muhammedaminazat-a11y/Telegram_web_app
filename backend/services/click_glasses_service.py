@@ -9,7 +9,7 @@ from fastapi import HTTPException
 def create_click_glasses(db: Session, data: ClickGlassesCreate) -> ClickGlasses:
     if not get_click(db, data.click_id):
          raise HTTPException(status_code=400, detail="Клик с таким ID не существует")
-    glasses = ClickGlasses(**data.dict())  # создаём объект ORM из Pydantic-схемы
+    glasses = ClickGlasses(**data.model_dump())  # создаём объект ORM из Pydantic-схемы
     db.add(glasses)
     db.commit()
     db.refresh(glasses)  # обновляем объект из базы (чтобы получить id)
@@ -29,7 +29,7 @@ def update_glasses(db: Session, glasses_id: int, data: ClickGlassesUpdate) -> Cl
     if not glasses:
         return None
     # обновляем только те поля, которые переданы
-    for field, value in data.dict(exclude_unset=True).items():
+    for field, value in data.model_dump(exclude_unset=True).items():
         setattr(glasses, field, value)
     db.commit()
     db.refresh(glasses)

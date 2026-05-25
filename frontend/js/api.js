@@ -1,64 +1,32 @@
-import { apiTasks } from "../pages/api.js";
-const tg = window.Telegram.WebApp;
-tg.ready();
+const API_BASE = (window.API_BASE || "http://localhost:8000") + "/task";
 
-// показать форму
-document.getElementById("addTaskBtn").addEventListener("click", () => {
-  document.getElementById("taskForm").style.display = "block";
-});
-
-// отправка формы
-  document.getElementById("taskForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = {
-      title: document.getElementById("title").value,
-      description: document.getElementById("description").value,
-      done: false
-    };
-
-    await apiTasks.create(data);
-
-    document.getElementById("taskForm").reset();
-    document.getElementById("taskForm").style.display = "none";
-
-    await loadTasks();
-    tg.close(); // закрыть Mini App после сохранения
-  });
-
-  // проверка даты
-  function isToday(dateString) {
-    const d = new Date(dateString);
-    const today = new Date();
-    return d.getDate() === today.getDate() &&
-           d.getMonth() === today.getMonth() &&
-           d.getFullYear() === today.getFullYear();
-  }
-
-  // загрузка задач
-  async function loadTasks(filter = "all") {
-    const tasks = await apiTasks.getAll();
-    const list = document.getElementById("tasksList");
-    list.innerHTML = "";
-
-    tasks.forEach(task => {
-      if (filter === "done" && !task.done) return;
-      if (filter === "today" && !isToday(task.created_at)) return;
-
-      const li = document.createElement("li");
-      li.className = "task";
-      li.textContent = task.title + (task.done ? " ✅" : "");
-      list.appendChild(li);
+export const apiTasks = {
+  getAll: async () => {
+    const res = await fetch(API_BASE);
+    if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
+    return res.json();
+  },
+  create: async (data) => {
+    const res = await fetch(API_BASE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     });
-  }
-
-  // фильтры
-  document.querySelectorAll(".filter").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter").forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-      document.getElementById("activeFilterText").textContent = btn.textContent;
-      loadTasks(btn.dataset.filter);
+    if (!res.ok) throw new Error(`Ошибка создания: ${res.status}`);
+    return res.json();
+  },
+  update: async (id, data) => {
+    const res = await fetch(`${API_BASE}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     });
-  });
-
-  window.onload = () => loadTasks();
+    if (!res.ok) throw new Error(`Ошибка обновления: ${res.status}`);
+    return res.json();
+  },
+  delete: async (id) => {
+    const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(`Ошибка удаления: ${res.status}`);
+    return true;
+  }
+};

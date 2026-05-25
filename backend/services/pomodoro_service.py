@@ -1,6 +1,5 @@
 from fastapi import HTTPException
 from datetime import datetime, timedelta
-from backend.services import pomodoro_service
 from backend.schemas.pomodoro import PomodoroCreate, PomodoroUpdate, PomodoroOut, PomodoroProgress
 
 # временное хранилище (имитация базы данных)
@@ -31,7 +30,7 @@ def update(pomodoro_id: int, data: PomodoroUpdate) -> PomodoroOut:
     if pomodoro_id not in pomodoros:
         raise HTTPException(status_code=404, detail="Таймер не найден")
 
-    updated = pomodoros[pomodoro_id].copy(update=data.dict(exclude_unset=True))
+    updated = pomodoros[pomodoro_id].model_copy(update=data.model_dump(exclude_unset=True))
     if updated.is_completed and updated.finished_at is None:
         updated.finished_at = datetime.now()
 
@@ -49,5 +48,5 @@ def progress(pomodoro_id: int) -> PomodoroProgress:
     if pomodoro_id not in pomodoros:
         raise HTTPException(status_code=404, detail="Таймер не найден")
     pomodoro = pomodoros[pomodoro_id]
-    elapsed = (datetime.now() - pomodoro.started_at).seconds // 60
+    elapsed = int((datetime.now() - pomodoro.started_at).total_seconds() // 60)
     return PomodoroProgress(elapsed=elapsed, total=pomodoro.duration_minutes)

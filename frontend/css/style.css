@@ -1,7 +1,1081 @@
 @import url("./base.css");
 @import url("./components.css");
 
-/* pages */
+/* Оверлей - это темный фон, который перекрывает все приложение */
+.task-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Затемнение */
+  backdrop-filter: blur(8px); /* Размытие заднего фона */
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  z-index: 1000;
+}
+/* Контейнер самой формы */
+.task-modal {
+  background-color: var(--card);
+  width: 95%;
+  max-width: 450px;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid var(--stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Отступы между элементами формы */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s ease-out; /* Плавное появление */
+}
+/* Заголовок формы */
+.modal-header {
+  margin-bottom: 8px;
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+/* Общие стили для полей ввода (input и textarea) */
+.form-input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background-color: var(--surface-1);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px; /* Предотвращает зум на iPhone */
+  outline: none;
+  transition: 0.2s;
+}
+/* Эффект при фокусе на поле ввода */
+.form-input:focus {
+  border-color: var(--accent);
+  background-color: var(--card);
+}
+/* Контейнер для кнопок внизу формы */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+/* Кнопка "Создать задачу" */
+.btn-submit {
+  flex: 2; /* Занимает больше места */
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent); /* Акцентный цвет */
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+}
+/* Кнопка "Отмена" */
+.btn-cancel {
+  flex: 1; /* Занимает меньше места */
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Анимация появления формы снизу */
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; } /* Начинаем ниже и невидимой */
+  to { transform: translateY(0); opacity: 1; } /* Заканчиваем на месте и видимой */
+}
+
+/* --- Стили для home.css --- */
+.home-page{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* profile mini card */
+.home-profile{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home-profile__left{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.home-avatar{
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  flex: 0 0 auto;
+}
+.home-avatar img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+}
+
+.home-user{ min-width:0; }
+.home-name{
+  font-weight: 950;
+  font-size: 18px;
+  line-height: 1.1;
+}
+.home-username{ margin-top: 4px; }
+.home-id{ margin-top: 6px; font-size: 12px; }
+
+/* today tasks */
+.home-tasks__hint{
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+/* games row */
+.games-row{
+  display:flex;
+  justify-content: space-between;
+  overflow:auto;
+  padding-bottom: 4px;
+
+}
+
+.game-btn{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  height: 100px;
+  width: 120px;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: rgba(28, 16, 72, 0.14);
+  padding: 14px;
+  cursor:pointer;
+  text-align:left;
+  transition: transform .12s ease;
+}
+.game-btn:hover{
+  background: rgba(124,92,255,.14);
+}
+.game-btn:active{
+  transform: scale(.99);
+}
+
+.game-btn__title{
+  font-weight: 950;
+  font-size: 16px;
+}
+.image-click{
+  height: 50px;
+  width: 50px;
+}
+.game-btn__sub{
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* --- Стили для pomodoro.css --- */
+.pomodoro-page{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pom-card{
+  padding: 14px;
+}
+
+.pom-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pom-ring-wrap{
+  display:flex;
+  justify-content:center;
+  margin-top: 14px;
+}
+
+.pom-ring{
+  width: 210px;
+  height: 210px;
+  border-radius: 999px;
+  position: relative;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: var(--shadow);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(124,92,255,.22), transparent 55%),
+    radial-gradient(circle at 70% 85%, rgba(34,211,238,.12), transparent 55%),
+    rgba(255,255,255,.04);
+  overflow:hidden;
+}
+
+/* Progress layer */
+.pom-ring::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      rgba(124,92,255,.95) var(--p, 0%),
+      rgba(255,255,255,.06) 0
+    );
+  mask: radial-gradient(circle, transparent 60%, #000 61%);
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
+  opacity: .95;
+}
+
+.pom-time{
+  position: relative;
+  z-index: 2;
+  font-size: 40px;
+  font-weight: 950;
+  letter-spacing: 1px;
+}
+
+.pom-sub{
+  position: relative;
+  z-index: 2;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.pom-actions{
+  margin-top: 16px;
+  display:flex;
+  justify-content:center;
+}
+
+.pom-start{
+  width: 100%;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+.pom-card2{
+  padding: 14px;
+}
+
+.pom-hint{
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.segmented{
+  display:flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--radius2);
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+}
+
+.seg{
+  flex:1;
+  border:1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 14px;
+  cursor:pointer;
+  font-weight: 900;
+}
+
+.seg.is-active{
+  border-color: rgba(124,92,255,.35);
+  background: rgba(124,92,255,.18);
+}
+
+/* --- Стили для profile.css --- */
+.profile-page{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* topbar */
+.profile-topbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 2px;
+}
+
+.p-icon-btn{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-weight: 900;
+}
+
+.profile-title{
+  text-align:center;
+  flex: 1;
+  min-width: 0;
+}
+.profile-title__main{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+.profile-title__sub{
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* profile main card */
+.profile-card{
+  padding: 14px;
+}
+
+.profile-head{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+
+.profile-avatar{
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+.profile-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-meta{
+  min-width: 0;
+}
+.profile-name{
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1.1;
+}
+.profile-username{
+  margin-top: 4px;
+}
+.profile-id{
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* quick pills */
+.profile-quick{
+  margin-top: 12px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quick-pill{
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  padding: 10px 10px;
+  text-align:left;
+}
+.quick-pill__label{
+  font-size: 11px;
+}
+.quick-pill__value{
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+/* action buttons */
+.profile-actions{
+  margin-top: 12px;
+  display:flex;
+  gap: 10px;
+}
+.profile-actions .btn{
+  flex: 1;
+}
+
+/* sections */
+.profile-section{
+  padding: 14px;
+}
+/*  */
+.p-row{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  text-align:left;
+}
+.p-row + .p-row{ margin-top: 10px; }
+
+.p-row__left{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display:grid;
+  place-items:center;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.p-row__mid{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.p-row__title{
+  font-weight: 900;
+}
+.p-row__hint{
+  font-size: 12px;
+}
+
+.p-row__right{
+  font-size: 18px;
+  opacity: .8;
+}
+
+.p-row--danger{
+  border-color: rgba(239,68,68,.35);
+  background: rgba(239,68,68,.08);
+}
+
+.profile-bottom-note{
+  font-size: 12px;
+  text-align:center;
+  padding: 6px 10px 2px;
+}
+
+/* settings dropdown */
+.settings-dropdown{
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease, opacity .2s ease;
+  opacity: 0;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-dropdown.is-open{
+  max-height: 300px; /* с запасом */
+  opacity: 1;
+}
+
+.settings-item{
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  font-weight: 700;
+}
+
+.settings-item:hover{
+  background: rgba(124,92,255,.15);
+}
+
+
+/* About Modal */
+.modal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 1000;
+}
+
+.modal.is-open{
+  display: block;
+}
+
+.modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal__card{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 24px));
+  background-color: rgb(7, 10, 35);
+  border-radius: 20px;
+}
+
+.modal__head{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.modal__title{
+  font-weight: 900;
+}
+.modal__close_left{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke) ;
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.modal__close{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.modal__body{
+  padding: 14px;
+}
+
+.about-row{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-1);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+/* --- Стили для click.css --- */
+.clicker-card { padding: 16px; }
+
+.clicker-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 14px;
+}
+
+.clicker-top__actions{ display:flex; gap:8px; align-items:center; }
+
+.clicker-stats{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+  margin-bottom: 14px;
+}
+
+.clicker-body{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 14px;
+  padding: 14px 10px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.03);
+  border-radius: var(--radius2);
+}
+
+.tap-btn{
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.22), transparent 55%),
+    radial-gradient(circle at 50% 60%, rgba(124,92,255,.22), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  box-shadow: var(--shadow);
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .08s ease;
+}
+
+.tap-btn:active{ transform: scale(.985); }
+
+.tap-btn__ring{
+  position:absolute;
+  inset: 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.02);
+}
+
+.tap-btn__face{
+  position:absolute;
+  inset: 42px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 40% 35%, rgba(255,255,255,.30), transparent 45%),
+    linear-gradient(135deg, rgba(34,211,238,.22), rgba(124,92,255,.22));
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.tap-btn__text{
+  position:relative;
+  z-index:2;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 26px;
+  text-shadow: 0 10px 22px rgba(0,0,0,.55);
+}
+
+.tap-btn.tap-anim{ animation: tapPop .12s ease; }
+@keyframes tapPop { from{ transform: scale(1); } to{ transform: scale(.985);} }
+
+.energy{ width: min(360px, 100%); }
+
+.energy-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size: 12px;
+}
+
+.energy-bar{
+  margin-top: 8px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.energy-bar__fill{
+  height:100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(124,92,255,.95), rgba(34,211,238,.95));
+}
+
+/* --- Стили для ai.css --- */
+.chat-card{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chat-box{
+  height: 420px;
+  overflow:auto;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.04);
+  border-radius: var(--radius2);
+  padding: 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg-row{
+  display:flex;
+  gap: 10px;
+}
+
+.msg-row.user{ justify-content: flex-end; }
+.msg-row.bot{ justify-content: flex-start; }
+
+.bubble{
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bubble.user{
+  border-color: rgba(124,92,255,.35);
+  background: rgba(124,92,255,.16);
+}
+
+.bubble.bot{
+  border-color: rgba(34,211,238,.25);
+  background: rgba(34,211,238,.10);
+}
+
+.chat-form{
+  display:flex;
+  gap: 10px;
+  align-items:flex-end;
+}
+
+.chat-input{
+  flex:1;
+  min-height: 44px;
+  max-height: 140px;
+  resize: none;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  outline: none;
+}
+
+.chat-input:focus{ border-color: rgba(124,92,255,.40); }
+
+.chat-send{
+  width: 48px;
+  height: 44px;
+  padding: 0;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  font-weight: 900;
+}
+
+.chat-send:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.chat-footer{ font-size: 12px; }
+
+/* --- Стили для task.css --- */
+/* ===== Tasks page ===== */
+/* ===== Task filters ===== */
+
+.filters{
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+/* кнопка-фильтр */
+.filter{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 13px;
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .12s ease;
+}
+
+/* hover */
+.filter:hover{
+  background: rgba(124,92,255,.12);
+}
+
+/* active tab */
+.filter.is-active{
+  background: rgba(170, 149, 255, 0.22);
+  border-color: rgba(177, 158, 255, 0.45);
+  box-shadow:
+    0 8px 24px rgba(124,92,255,.35),
+    inset 0 0 0 1px rgba(255,255,255,.15);
+}
+
+/* click */
+.filter:active{
+  transform: scale(.97);
+}
+
+
+
+.filters{
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+/* tabs buttons */
+.filter{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  transition: .2s ease;
+}
+
+/* hover */
+.filter:hover{
+  background: rgba(124,92,255,.12);
+}
+
+/* active tab */
+.filter.is-active{
+  background: rgba(124,92,255,.22);
+  border-color: rgba(124,92,255,.35);
+  box-shadow: 0 6px 20px rgba(124,92,255,.25);
+}
+
+/* section head already exists, но чуть усилим */
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* task list placeholder */
+.task-list{
+  margin-top: 10px;
+}
+
+.task.muted{
+  justify-content: center;
+  text-align: center;
+  opacity: .7;
+  font-size: 13px;
+}
+
+/* add button small glow */
+#addTaskBtn{
+  box-shadow: 0 8px 24px rgba(124,92,255,.35);
+}
+
+/* --- Стили для reaction.css --- */
+.reaction-page{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reaction-card{
+  padding: 16px;
+  text-align:center;
+}
+
+.reaction-hint{
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.reaction-box{
+  margin: 18px 0;
+  height: 160px;
+  border-radius: 20px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 950;
+  font-size: 22px;
+  transition: background .2s ease;
+}
+
+.reaction-box.waiting{
+  background: rgba(239,68,68,.25); /* красный */
+}
+
+.reaction-box.ready{
+  background: rgba(34,197,94,.35); /* зелёный */
+}
+
+.reaction-btn{
+  width: 100%;
+  margin-top: 6px;
+}
+
+.reaction-result{
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.reaction-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  text-align:left;
+}
+
+.reaction-best{
+  min-width: 74px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  text-align:center;
+}
+
+.reaction-best__val{
+  margin-top: 4px;
+  font-weight: 950;
+  font-size: 14px;
+}
+
+.reaction-stats{
+  margin-top: 12px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-pill{
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  padding: 10px 10px;
+  text-align:left;
+}
+
+.stat-val{
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+
+
+.history-ms{
+  font-weight: 900;
+}
+
+.history-meta{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.reaction-top{
+  margin-top: 12px;
+}
+
+.top-list{
+  margin: 0;
+  padding-left: 18px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.top-item{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+}
+
+.top-item.is-best{
+  border-color: rgba(124,92,255,.35);
+  background: rgba(124,92,255,.14);
+}
+
+.top-ms{
+  font-weight: 950;
+}
+
+.top-meta{
+  font-size: 12px;
+  color: var(--muted);
+}
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-submit {
+  flex: 2;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Анимация появления */
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Импорты только необходимых базовых стилей */
 @import url("./pages/home.css");
 @import url("./pages/pomodoro.css");
 @import url("./pages/profile.css");
@@ -9,5 +1083,3 @@
 @import url("./pages/ai.css");
 @import url("./pages/task.css");
 @import url("./pages/reaction.css");
-
-

@@ -22,7 +22,7 @@ def get_task(db: Session, task_id: int) -> TaskOut:
     return task
 
 def create_task(db: Session, task: TaskCreate):
-    new_task= Task(**task.dict())
+    new_task= Task(**task.model_dump())
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
@@ -36,7 +36,7 @@ def update_task(db: Session, task_id: int, task: TaskUpdate):
     if not db_task: 
         raise HTTPException(status_code=404, detail="Задача не найдена")
     
-    for key, value in task.dict(exclude_unset=True).items():
+    for key, value in task.model_dump(exclude_unset=True).items():
          setattr(db_task, key, value)
 
     db.commit()

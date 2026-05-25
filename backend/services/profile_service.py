@@ -30,7 +30,7 @@ def create_profile(profile: ProfileCreate) -> ProfileOut:
 def update_profile(profile_id: int, profile: ProfileUpdate) -> ProfileOut:
     if profile_id not in profiles:
         raise HTTPException(status_code=404, detail="Профиль не найден")
-    profiles[profile_id].update(profile.dict(exclude_unset=True))
+    profiles[profile_id].update(profile.model_dump(exclude_unset=True))
     return profiles[profile_id]
 
 # эндпоинт удаление профиля

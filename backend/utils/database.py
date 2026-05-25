@@ -9,15 +9,17 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL is not set in environment variables")
 
-engine = create_engine(DATABASE_URL, echo=True)
+# Для SQLite нужно разрешить работу в разных потоках (актуально для FastAPI)
+connect_args = {}
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args, echo=True)
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 class Base(DeclarativeBase):
     pass
-
-# Импорт моделей, чтобы они зарегистрировались в Base.metadata
-from backend.models import task, task_log, click, click_glasses
 
 def get_db():
     db = SessionLocal()

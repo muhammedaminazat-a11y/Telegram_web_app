@@ -87,7 +87,7 @@ async def about(message: Message):
         "• Frontend: SPA (HTML / CSS / JavaScript)\n"
         "• Backend: FastAPI\n"
         "• Bot: aiogram\n"
-        "• Без базы данных\n\n"
+        "• Database: SQLAlchemy + SQLite\n\n"
 
         "*Зачем это приложение:*\n"
         "• Быстро фиксировать задачи\n"

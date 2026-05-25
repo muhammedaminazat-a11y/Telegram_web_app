@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 class TaskBase(BaseModel):
     # -- Расширенная валидация данных -- 
     title: str = Field(..., min_length=3, max_length=50, description="Название задачи") # ..., обязательное поле 
-    description: str | None = Field(None, min_length=3, max_length=100, description="Описание задачи") 
+    description: str | None = Field(None, max_length=100, description="Описание задачи") 
     done: bool = Field(False) # по умолчанию задача не выполнена
 
 # --- Создание задачи ---
@@ -19,7 +19,7 @@ class TaskCreate(TaskBase):
                 "done": False 
             }
         }
-        orm_mode = True # подключение к бд PostgreSQL ORM
+        from_attributes = True # подключение к бд PostgreSQL ORM
 # --- Обновление задачи ---
 class TaskUpdate(BaseModel):
     # -- Расширенная валидация данных -- 

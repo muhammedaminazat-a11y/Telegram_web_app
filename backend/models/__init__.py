@@ -7,12 +7,8 @@ from backend.models.task import Task
 
 # Список всех моделей, чтобы Alembic видел их при автогенерации миграций
 __all__ = ["Base",
-            "AI",
             "Click",
             "ClickGlasses",
-            "Home",
-            "Pomodoro",
-            "Profile",
             "TaskLog",
             "Task",
             ]

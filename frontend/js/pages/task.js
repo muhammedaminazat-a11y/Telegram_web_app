@@ -1,126 +1,113 @@
 import { apiTasks } from "../api.js";
 
 export function initTask() {
-  const list = document.getElementById("tasksList");
+  const tg = window.Telegram?.WebApp;
+  if (tg) tg.ready();
+
   const addBtn = document.getElementById("addTaskBtn");
-  const filters = document.getElementById("taskFilters");
+  const taskForm = document.getElementById("taskForm");
+  const tasksList = document.getElementById("tasksList");
 
-  if (!list || !addBtn || !filters) return;
+  if (!addBtn || !taskForm) return;
 
-  let allTasks = [];
-  let activeFilter = "all";
+  addBtn.addEventListener("click", () => {
+    taskForm.style.display = "flex";
+  });
 
-  function setActiveFilter(next) {
-    activeFilter = next;
-    filters.querySelectorAll(".filter").forEach((b) => {
-      b.classList.toggle("is-active", b.dataset.filter === next);
+  taskForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+      done: false
+    };
+
+    try {
+      await apiTasks.create(data);
+      taskForm.reset();
+      taskForm.style.display = "none";
+      await loadTasks();
+    } catch (err) {
+      console.error("Ошибка при создании задачи:", err);
+    }
+  });
+
+  async function loadTasks(filter = "all") {
+    if (!tasksList) return;
+    
+    try {
+      const tasks = await apiTasks.getAll();
+      tasksList.innerHTML = "";
+
+      tasks.forEach(task => {
+        const isDone = task.done;
+        if (filter === "done" && !isDone) return;
+        if (filter === "active" && isDone) return;
+
+        const li = document.createElement("li");
+        li.className = "task";
+        if (isDone) li.style.opacity = "0.7";
+        
+        // Контейнер для текста (клик по нему меняет статус задачи)
+        const infoDiv = document.createElement("div");
+        infoDiv.style.flex = "1";
+        infoDiv.style.cursor = "pointer";
+        infoDiv.onclick = async () => {
+          await apiTasks.update(task.id, { done: !isDone });
+          await loadTasks(filter);
+        };
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "task__title";
+        titleDiv.textContent = `${task.title} ${isDone ? "✅" : ""}`;
+        
+        const descSmall = document.createElement("small");
+        descSmall.className = "muted";
+        descSmall.textContent = task.description || "";
+
+        infoDiv.appendChild(titleDiv);
+        infoDiv.appendChild(descSmall);
+
+        // Кнопка удаления
+        const delBtn = document.createElement("button");
+        delBtn.innerHTML = "🗑️";
+        delBtn.style.border = "none";
+        delBtn.style.background = "none";
+        delBtn.style.cursor = "pointer";
+        delBtn.style.fontSize = "1.2em";
+        delBtn.onclick = async (e) => {
+          e.stopPropagation(); // Чтобы не срабатывал клик по infoDiv
+          tg.showConfirm("Удалить эту задачу?", async (confirmed) => {
+        if (confirmed) {
+        await apiTasks.delete(task.id);
+        await loadTasks(filter);
+      }
     });
-    render();
-  }
+        };
 
-  function filterTasks(tasks) {
-    if (activeFilter === "done") return tasks.filter((t) => t.done);
-
-    if (activeFilter === "today") {
-      // если у задач нет даты — просто показываем НЕ выполненные как "на сегодня"
-      return tasks.filter((t) => !t.done);
-    }
-
-    return tasks; // all
-  }
-
-  function render() {
-    const tasks = filterTasks(allTasks);
-
-    list.innerHTML = "";
-
-    if (!tasks.length) {
-      list.innerHTML = `<li class="task muted">Пока пусто</li>`;
-      return;
-    }
-
-    for (const t of tasks) {
-      const li = document.createElement("li");
-      li.className = "task";
-
-      li.innerHTML = `
-        <label class="chk">
-          <input type="checkbox" class="task__check" ${t.done ? "checked" : ""}/>
-          <span class="chk__ui"></span>
-        </label>
-
-        <div class="task__body">
-          <div class="task__title"></div>
-          <div class="task__meta"></div>
-        </div>
-
-        <button class="btn btn-ghost btn-sm" data-del type="button">🗑</button>
-      `;
-
-      li.querySelector(".task__title").textContent = t.title ?? "Без названия";
-      li.querySelector(".task__meta").textContent = t.description ?? "";
-
-      // toggle done
-      li.querySelector(".task__check").addEventListener("change", async (e) => {
-        try {
-          await apiTasks.update(t.id, { done: e.target.checked });
-          await load();
-        } catch (err) {
-          console.error(err);
-          alert("Не удалось обновить задачу");
-        }
+        li.appendChild(infoDiv);
+        li.appendChild(delBtn);
+        tasksList.appendChild(li);
       });
 
-      // delete
-      li.querySelector("[data-del]").addEventListener("click", async () => {
-        if (!confirm("Удалить задачу?")) return;
-        try {
-          await apiTasks.remove(t.id);
-          await load();
-        } catch (err) {
-          console.error(err);
-          alert("Не удалось удалить задачу");
-        }
-      });
-
-      list.appendChild(li);
+      if (tasksList.innerHTML === "") {
+        tasksList.innerHTML = "<li class='muted'>Задач не найдено</li>";
+      }
+    } catch (err) {
+      console.error("Ошибка загрузки задач:", err);
+      tasksList.innerHTML = "<li class='muted'>Ошибка загрузки</li>";
     }
   }
 
-  async function load() {
-    list.innerHTML = `<li class="task">Загрузка…</li>`;
-    try {
-      allTasks = await apiTasks.getAll();
-      render();
-    } catch (err) {
-      console.error(err);
-      list.innerHTML = `<li class="task">API недоступен</li>`;
-    }
-  }
-
-  // add task
-  addBtn.addEventListener("click", async () => {
-    const title = prompt("Название задачи:");
-    if (!title) return;
-
-    const description = prompt("Описание (необязательно):") || "";
-
-    try {
-      await apiTasks.create({ title, description, done: false });
-      await load();
-    } catch (err) {
-      console.error(err);
-      alert("Не удалось создать задачу");
-    }
+  document.querySelectorAll(".filter").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".filter").forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      const filterText = document.getElementById("activeFilterText");
+      if (filterText) filterText.textContent = btn.textContent;
+      loadTasks(btn.dataset.filter);
+    };
   });
 
-  // filters click
-  filters.addEventListener("click", (e) => {
-    const btn = e.target.closest(".filter");
-    if (!btn) return;
-    setActiveFilter(btn.dataset.filter);
-  });
-
-  setActiveFilter("all");
-  load();
+  loadTasks();
 }

@@ -10,28 +10,29 @@
       <button class="filter" data-filter="today" type="button">Сегодня</button>
       <button class="filter" data-filter="done" type="button">Готово</button>
     </div>
+    
+    <div class="filter-info muted" style="padding: 8px 0; font-size: 0.85em;">
+      Выбран фильтр: <b id="activeFilterText">Все</b>
+    </div>
 
-    <!-- список пока заглушка -->
-    <ul class="task-list" id="tasksList">
-      <li class="task muted">Выбран фильтр: <b id="activeFilterText">Все</b></li>
-    </ul>
+    <ul class="task-list" id="tasksList"></ul>
   </div>
 </section>
 
-<form id="taskForm" style="display:none">
-  <input type="text" id="title" placeholder="Название задачи" required>
-  <textarea id="description" placeholder="Описание"></textarea>
-  <button type="submit">Сохранить</button>
+<!-- Красивое модальное окно в стиле Telegram -->
+<form id="taskForm" class="task-form-overlay" style="display:none">
+  <div class="task-modal">
+    <div class="modal-header">
+      <h3>Новая задача</h3>
+      <p class="muted">Введите детали того, что нужно сделать</p>
+    </div>
+    
+    <input type="text" id="title" class="form-input" placeholder="Название (минимум 3 символа)" required>
+    <textarea id="description" class="form-input" placeholder="Описание задачи..." rows="3"></textarea>
+    
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" onclick="document.getElementById('taskForm').style.display='none'">Отмена</button>
+      <button type="submit" class="btn-submit">Создать задачу</button>
+    </div>
+  </div>
 </form>
-
-<!-- общий API -->
-<script type="module" src="../pages/api.js"></script>
-
-<!-- логика приложения -->
-<script type="module" src="../pages/app.js"></script>
-
-<!-- тема (светлая/тёмная) -->
-<script type="module" src="../pages/theme.js"></script>
-
-<!-- если есть отдельный JS для task -->
-<script type="module" src="./task.js"></script>

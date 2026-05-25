@@ -11,13 +11,10 @@ router = APIRouter(
     tags=["profile"]
     )
 
-# временное хранилище словарь (замена на PostgreSQL)
-profiles = {} 
-
 # эндпоинт получения словаря пользователей
 @router.get("/", response_model=list[ProfileOut])
 def get_profiles():
-    return list(profiles.values())
+    return profile_service.get_profiles()
 
 # эндпоинт получения одного пользователя
 @router.get("/{profile_id}", response_model=ProfileOut)
