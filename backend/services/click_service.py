@@ -3,7 +3,7 @@ from backend.models.click import Click
 from backend.schemas.click import ClickCreate, ClickUpdate
 
 def create_click(db: Session, data: ClickCreate) -> Click:
-    click = Click(**data.dict())
+    click = Click(**data.model_dump())
     db.add(click)
     db.commit()
     db.refresh(click)
@@ -19,7 +19,7 @@ def update_click(db: Session, click_id: int, data: ClickUpdate) -> Click | None:
     click = get_click(db, click_id)
     if not click:
         return None
-    for field, value in data.dict(exclude_unset=True).items():
+    for field, value in data.model_dump(exclude_unset=True).items():
         setattr(click, field, value)
     db.commit()
     db.refresh(click)

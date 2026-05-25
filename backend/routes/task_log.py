@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.utils.database import SessionLocal
+from backend.utils.database import get_db
 from backend.schemas.task_log import TaskLogOut, TaskLogBase
 from backend.services import task_log_service
 
@@ -8,13 +8,6 @@ router = APIRouter(
     prefix="/task_log",
     tags=["task_log"]
     )
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=TaskLogOut)
 def create_task_log(log: TaskLogBase, db: Session = Depends(get_db)):

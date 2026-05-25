@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.utils.database import SessionLocal
+from backend.utils.database import get_db
 from backend.services import task_service
 from backend.schemas.task import (
     TaskCreate, 
@@ -12,13 +12,6 @@ router = APIRouter(
     prefix="/task",
     tags=["task"]
     )
-
-def get_db():
-    db = SessionLocal()
-    try:
-         yield db
-    finally:
-        db.close()
 
 # эндпоинт получения списка задач
 @router.get("", response_model=list[TaskOut])

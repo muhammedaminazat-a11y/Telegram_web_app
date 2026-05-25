@@ -3,6 +3,7 @@ from backend.schemas.profile import ProfileCreate, ProfileUpdate, ProfileOut
 
 # временное хранилище словарь (замена на PostgreSQL)
 profiles = {}
+_id_counter = 0
 
 # эндпоинт получения словаря пользователей
 def get_profiles() -> list[ProfileOut]:
@@ -16,15 +17,17 @@ def get_profile(profile_id: int) -> ProfileOut:
 
 # эндпоинт создание профиля
 def create_profile(profile: ProfileCreate) -> ProfileOut:
-   profiles_id = len(profiles) + 1 # при создании id увеличивается на 1
-   profiles[profiles_id] = {
-        "id": profiles_id, 
+    global _id_counter
+    _id_counter += 1
+    
+    profiles[_id_counter] = {
+        "id": _id_counter, 
         "telegram_id": profile.telegram_id,
         "name": profile.name,
         "avatar_url": profile.avatar_url,
         "settings": profile.settings
-        }   
-   return profiles[profiles_id]
+    }   
+    return ProfileOut(**profiles[_id_counter])
 
 # эндпоинт обновления профиля
 def update_profile(profile_id: int, profile: ProfileUpdate) -> ProfileOut:

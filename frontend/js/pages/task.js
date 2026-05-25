@@ -10,11 +10,20 @@ export function initTask() {
 
   if (!addBtn || !taskForm) return;
 
-  addBtn.addEventListener("click", () => {
+  // Используем onclick вместо addEventListener, чтобы избежать дублей в SPA
+  addBtn.onclick = () => {
     taskForm.style.display = "flex";
-  });
+    document.getElementById("title").focus(); // Автофокус на поле ввода
+  };
 
-  taskForm.addEventListener("submit", async (e) => {
+  // Закрытие формы при клике на темный фон (вне самой модалки)
+  taskForm.onclick = (e) => {
+    if (e.target === taskForm) {
+      taskForm.style.display = "none";
+    }
+  };
+
+  taskForm.onsubmit = async (e) => {
     e.preventDefault();
     const data = {
       title: document.getElementById("title").value,
@@ -29,8 +38,13 @@ export function initTask() {
       await loadTasks();
     } catch (err) {
       console.error("Ошибка при создании задачи:", err);
+      if (tg?.showAlert) {
+        tg.showAlert("Не удалось создать задачу. Проверь сеть или длину названия (мин. 3 символа).");
+      } else {
+        alert("Ошибка создания задачи. Проверьте название.");
+      }
     }
-  });
+  };
 
   async function loadTasks(filter = "all") {
     if (!tasksList) return;
@@ -41,8 +55,14 @@ export function initTask() {
 
       tasks.forEach(task => {
         const isDone = task.done;
+        
+        // Логика фильтрации
         if (filter === "done" && !isDone) return;
-        if (filter === "active" && isDone) return;
+        if (filter === "today") {
+           // Для Junior: пока просто имитируем, что новые задачи — это "сегодня"
+           // Если в БД появится поле date, здесь будет сравнение дат
+        }
+        if (filter === "active" && isDone) return; 
 
         const li = document.createElement("li");
         li.className = "task";
@@ -76,13 +96,33 @@ export function initTask() {
         delBtn.style.cursor = "pointer";
         delBtn.style.fontSize = "1.2em";
         delBtn.onclick = async (e) => {
-          e.stopPropagation(); // Чтобы не срабатывал клик по infoDiv
-          tg.showConfirm("Удалить эту задачу?", async (confirmed) => {
-        if (confirmed) {
-        await apiTasks.delete(task.id);
-        await loadTasks(filter);
-      }
-    });
+          e.stopPropagation();
+          const confirmMsg = "Удалить эту задачу?";
+
+          const performDelete = async () => {
+            try {
+              await apiTasks.delete(task.id);
+              await loadTasks(filter);
+            } catch (err) {
+              console.error("Ошибка удаления:", err);
+              if (tg?.showAlert) tg.showAlert("Не удалось удалить задачу.");
+              else alert("Не удалось удалить задачу.");
+            }
+          };
+
+          // Проверяем версию WebApp: showConfirm стабильно работает с версии 6.1
+          // Если версия ниже 6.1, используем window.confirm
+          const isWebAppVersionSupported = tg && tg.version && parseFloat(tg.version) >= 6.1;
+
+          if (isWebAppVersionSupported && typeof tg.showConfirm === 'function') {
+            tg.showConfirm(confirmMsg, (confirmed) => {
+              if (confirmed) performDelete();
+            });
+          } else {
+            if (window.confirm(confirmMsg)) {
+              performDelete();
+            }
+          }
         };
 
         li.appendChild(infoDiv);

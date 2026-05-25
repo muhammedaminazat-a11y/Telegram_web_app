@@ -8,7 +8,7 @@ from fastapi import HTTPException
 # Создание записи очков
 def create_click_glasses(db: Session, data: ClickGlassesCreate) -> ClickGlasses:
     if not get_click(db, data.click_id):
-         raise HTTPException(status_code=400, detail="Клик с таким ID не существует")
+         raise HTTPException(status_code=404, detail=f"Клик с ID {data.click_id} не найден")
     glasses = ClickGlasses(**data.model_dump())  # создаём объект ORM из Pydantic-схемы
     db.add(glasses)
     db.commit()

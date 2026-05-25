@@ -52,10 +52,14 @@
   <script type="module" src="frontend/js/app.js?v=1.0.1"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-  window.API_BASE = "http://192.168.1.37";     
-  window.AI_API_BASE = "http://192.168.1.37"; 
-  </script>
+  let currentHost = window.location.hostname;
+  if (!currentHost || currentHost === '0.0.0.0' || currentHost === '127.0.0.1') {
+    currentHost = 'localhost';
+  }
 
+  window.API_BASE = `http://${currentHost}:8000`;     
+  window.AI_API_BASE = `http://${currentHost}:8001`; 
+  </script>
 
 </body>
 </html>

@@ -2,9 +2,16 @@ const API_BASE = (window.API_BASE || "http://localhost:8000") + "/task";
 
 export const apiTasks = {
   getAll: async () => {
-    const res = await fetch(API_BASE);
-    if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-    return res.json();
+    try {
+      // Добавляем timestamp, чтобы браузер (и Telegram) всегда запрашивали свежие данные
+      const cacheBuster = `?t=${new Date().getTime()}`;
+      const res = await fetch(API_BASE + cacheBuster);
+      if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.error("Сетевая ошибка API:", err);
+      throw err;
+    }
   },
   create: async (data) => {
     const res = await fetch(API_BASE, {

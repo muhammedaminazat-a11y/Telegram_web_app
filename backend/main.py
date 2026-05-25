@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from backend.routes import click, click_glasses, home, pomodoro, profile, task, task_log
 
 # создания экземпляра приложения FastAPI
@@ -23,6 +25,9 @@ app.include_router(profile.router)
 app.include_router(task.router)
 app.include_router(task_log.router)
 
+# Раздача статических файлов фронтенда
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+
 # health-check эндпоинт
 @app.get("/health")
 def health_check():
@@ -30,6 +35,5 @@ def health_check():
 
 # корневой эндпоинт
 @app.get("/")
-def root():
-    return {"message": "Добро пожаловать в API!"} # возвращает словарь dict() ({})
-
+def serve_index():
+    return FileResponse("index.html")

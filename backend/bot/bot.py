@@ -11,9 +11,13 @@ from aiogram.types import (
 )
 from dotenv import load_dotenv
 
-load_dotenv()
-TOKEN = os.getenv("BOT_TOKEN")
-URL = os.getenv("WEBAPP_URL")
+# Загружаем переменные окружения и проверяем результат
+if not load_dotenv():
+    print("⚠️ Предупреждение: Файл .env не найден или не загружен. Проверьте его наличие в корне проекта.")
+
+# Используем .strip(), чтобы удалить возможные пробелы в начале или конце строки
+TOKEN = (os.getenv("BOT_TOKEN") or "").strip()
+URL = (os.getenv("WEBAPP_URL") or "").strip()
 
 if not TOKEN:
     raise RuntimeError("BOT_TOKEN не задан в .env")
