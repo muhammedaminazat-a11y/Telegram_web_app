@@ -6,6 +6,6 @@ class TaskLog(Base):
     __tablename__ = "task_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(Integer, ForeignKey("tasks.id", ondelete="SET NULL"), nullable=True)
+    task_id = Column(Integer, ForeignKey("task.id", ondelete="SET NULL"), nullable=True)
     action = Column(String, nullable=False)  # CREATE, UPDATE, DELETE
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)

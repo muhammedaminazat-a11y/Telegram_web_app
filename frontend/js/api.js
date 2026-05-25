@@ -1,26 +1,64 @@
-const API_BASE = window.API_BASE || "http://localhost:8000";
-export const TASKS_BASE = "http://127.0.0.1:8000/api";
+import { apiTasks } from "../pages/api.js";
+const tg = window.Telegram.WebApp;
+tg.ready();
 
+// показать форму
+document.getElementById("addTaskBtn").addEventListener("click", () => {
+  document.getElementById("taskForm").style.display = "block";
+});
 
-async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
+// отправка формы
+  document.getElementById("taskForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+      done: false
+    };
+
+    await apiTasks.create(data);
+
+    document.getElementById("taskForm").reset();
+    document.getElementById("taskForm").style.display = "none";
+
+    await loadTasks();
+    tg.close(); // закрыть Mini App после сохранения
   });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`HTTP ${res.status}: ${text}`);
+  // проверка даты
+  function isToday(dateString) {
+    const d = new Date(dateString);
+    const today = new Date();
+    return d.getDate() === today.getDate() &&
+           d.getMonth() === today.getMonth() &&
+           d.getFullYear() === today.getFullYear();
   }
 
-  const contentType = res.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) return res.json();
-  return null;
-}
+  // загрузка задач
+  async function loadTasks(filter = "all") {
+    const tasks = await apiTasks.getAll();
+    const list = document.getElementById("tasksList");
+    list.innerHTML = "";
 
-export const apiTasks = {
-  getAll: () => request("/task/"),
-  create: (data) => request("/task/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id, data) => request(`/task/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  remove: (id) => request(`/task/${id}`, { method: "DELETE" }),
-};
+    tasks.forEach(task => {
+      if (filter === "done" && !task.done) return;
+      if (filter === "today" && !isToday(task.created_at)) return;
+
+      const li = document.createElement("li");
+      li.className = "task";
+      li.textContent = task.title + (task.done ? " ✅" : "");
+      list.appendChild(li);
+    });
+  }
+
+  // фильтры
+  document.querySelectorAll(".filter").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter").forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      document.getElementById("activeFilterText").textContent = btn.textContent;
+      loadTasks(btn.dataset.filter);
+    });
+  });
+
+  window.onload = () => loadTasks();
